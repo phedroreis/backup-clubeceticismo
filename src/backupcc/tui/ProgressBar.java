@@ -26,6 +26,10 @@ public class ProgressBar {
     */
     private int filled;
     
+    private final int foregroundColor;
+    
+    private final int backgroundColor;
+    
     /*[00]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
@@ -35,12 +39,47 @@ public class ProgressBar {
      * @param total Total de itens a serem processados.
      * 
      * @param barLength Largura da barra em caracateres.
+     * 
+     * @param fg A cor de texto para a barra de progresso.
+     * 
+     * @param bg A cor de fundo para a barra de progresso.
      */
-    public ProgressBar(final int total, final int barLength) {
+    public ProgressBar(
+        final int total,
+        final int barLength,
+        final int fg,
+        final int bg
+    ) {
         
         this.total = total;
         this.barLength = barLength;
+        foregroundColor = fg;
+        backgroundColor = bg;
         filled = 0;
+         
+    }//construtor
+            
+    /*[00]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * O construtor da classe.
+     * 
+     * @param total Total de itens a serem processados.
+     * 
+     * @param barLength Largura da barra em caracateres.
+     * 
+     * @param fg A cor de texto para a barra de progresso.
+     * 
+     */
+    public ProgressBar(
+        final int total,
+        final int barLength,
+        final int fg
+        
+    ) {
+        
+        this(total, barLength, fg, Tui.NONE);
          
     }//construtor
     
@@ -59,6 +98,9 @@ public class ProgressBar {
             System.out.print("  " + repeatChar('#', filled));
         }
         else {
+            
+            Tui.setColor(foregroundColor);
+            if (backgroundColor != Tui.NONE) Tui.setBgColor(backgroundColor);
 
             Tui.hideCursor();
             System.out.print(
@@ -109,13 +151,8 @@ public class ProgressBar {
             Tui.resetCursorPosition();
         }
         
-        if (done == total) {
-            
-            Tui.println("");
-            Tui.showCursor();
-              
-        }
-        
+        if (done == total) Tui.restoreTerminalDefaults();
+             
     }//update()
     
     /*[--]----------------------------------------------------------------------
@@ -130,7 +167,9 @@ public class ProgressBar {
         
         int tot = 900000;
         
-        ProgressBar pb = new ProgressBar(tot, 50);
+        //Tui.ansiCodesDisable();
+        
+        ProgressBar pb = new ProgressBar(tot, 50, Tui.RED, Tui.WHITE);
         
         pb.show();
         
@@ -138,12 +177,14 @@ public class ProgressBar {
         for (int i = 0; i <= tot; i++) {
           
             if (i==100000) {
+               Tui.restoreTerminalDefaults();
                Tui.println("");
                Tui.println("");Tui.println("");Tui.println("");
                Tui.println("");Tui.println("");Tui.println("");
                Tui.println("");Tui.println("");
             }
-               if (i==450000) {
+            if (i==450000) {
+               Tui.restoreTerminalDefaults();
                Tui.println("");
                Tui.println("");Tui.println("");Tui.println("");
                Tui.println("");Tui.println("");Tui.println("");

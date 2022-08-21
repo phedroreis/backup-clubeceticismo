@@ -31,6 +31,39 @@ public class Util {
         return new String(sb);
     }//repeatChar()
     
+    /*[02]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * "Acolchoa" uma string com o caractere especificado.
+     * 
+     * @param c O caractere para acolchoamento.
+     * 
+     * @param s A string.
+     * 
+     * @param length Qual o comprimento da string acolchoada que deve ser 
+     * retornada.
+     * 
+     * @return A String s acolchoada com o caractere c ate atingir o comprimento
+     * length. A String s eh retornada centralizada no acolchoamento.
+     */
+    public static String pad(final char c, final String s, final int length) {
+        
+        if (length < s.length()) return s;
+               
+        int dif = length - s.length();
+        
+        int padLength = dif / 2;
+        
+        String pad = repeatChar(c, padLength);
+        
+        String r = pad + s + pad;
+        
+        if (dif % 2 == 1) r = r + c;  
+        
+        return r;        
+    }
+    
     /*[--]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
@@ -43,6 +76,7 @@ public class Util {
         String s = repeatChar('x', 0);
         System.out.println("" + s.isEmpty());
         System.out.println(repeatChar('x', 20));
+        System.out.println(pad('|', "um teste", 50));
     }//main()
        
     
