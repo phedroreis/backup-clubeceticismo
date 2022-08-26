@@ -10,7 +10,7 @@ package backupcc.strings;
  */
 public class Util {
         
-    /*[00]----------------------------------------------------------------------
+    /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
@@ -62,22 +62,7 @@ public class Util {
         if (dif % 2 == 1) r = r + c;  
         
         return r;        
-    }
-    
-    /*[--]----------------------------------------------------------------------
-    
-    --------------------------------------------------------------------------*/
-    /**
-     * Metodo main() para testar a classe.
-     * 
-     * @param args Nao usado
-     */
-    public static void main(String[] args) {
-        String s = repeatChar('x', 0);
-        System.out.println("" + s.isEmpty());
-        System.out.println(repeatChar('x', 20));
-        System.out.println(pad('|', "um teste", 50));
-    }//main()
-       
+    }//pad()
+           
     
 }//classe Util

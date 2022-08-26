@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/net/Constants.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Section.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchMain.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchHeaders.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/strings/Util.java</file>
-            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/ProgressBar.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/file/Util.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/net/URLInfo.java</file>
-            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/main/Main.java</file>
-            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/Tui.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Page.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/OptionBox.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchPages.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/ProgressBar.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Header.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/main/Main.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/UnexpectedHtmlFormatException.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchSections.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Main.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/Tui.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/net/Util.java</file>
         </group>
     </open-files>
 </project-private>

@@ -59,14 +59,23 @@ public class URLInfo {
      */
     public String getAbsoluteUrl() {
         
-        if (isRelativeAddress()) 
-            return (
-                backupcc.net.Constants.PROTOCOL + 
-                backupcc.net.Constants.DOMAIN + "/" + url
-            );
+        if (isRelativeAddress()) {
+            
+            if (url.startsWith("/")) return (Util.FORUM_URL + url);
+            return (Util.FORUM_URL + url.substring(1));
+                
+        }
          
         return url;
      
-    }//getAbsolute()
+    }//getAbsoluteUrl()
+    
+    public static void main(String[] args) {
+        
+        URLInfo u = new URLInfo("/bla");
+        
+        System.out.println(u.getAbsoluteUrl());
+        
+    }
     
 }//classe URLInfo
