@@ -59,11 +59,15 @@ public final class FetchSections {
         
         sections = headersPages.getSections();
          
-        for (Section section: sections)    
-            downloadUrl2Pathname(
-                section.getAbsoluteURL(), 
-                backupcc.file.Util.RAW_PAGES + '/' + section.getFilename()
-            );
+        for (Section section: sections)
+            
+            for (int i = 0; i < section.getNumberOfPages(); i++) {
+         
+                downloadUrl2Pathname(
+                    section.getAbsoluteURL(i), 
+                    backupcc.file.Util.RAW_PAGES + '/' + section.getFilename(i)
+                );
+            }//for i
         
     }//download()
     

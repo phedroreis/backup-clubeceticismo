@@ -55,6 +55,8 @@ public abstract class Page implements Comparable {
      */
     protected String absoluteURL;
     
+    public static final int MAX_ROWS_PER_PAGE = 50;
+        
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/   
@@ -64,7 +66,9 @@ public abstract class Page implements Comparable {
      * @return A id.
      */
     public int getId() {
+        
         return id;
+        
     }//getId()
     
     /*[02]----------------------------------------------------------------------
@@ -77,26 +81,44 @@ public abstract class Page implements Comparable {
      * @return O nome.
      */
     public String getName() {
+        
         return name;
+        
     }//getName()
     
     /*[03]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
-     * O nome do arquivo onde a 1a pagina de um header, secao ou topico sera 
-     * gravada no disco. Tera sempre o formato f=xx.html (no caso de headers e
-     * secoes) ou t=yy.html para topicos. Onde xx e yy representam a id.
+     * O nome do arquivo de um header ou da pagina principal.
      * Nesta versao, para a pagina principal (dados coletados por um objeto da
      * subclasse Main), o nome do arquivo eh clubeceticismo.com.br.html
      * 
      * @return O nome do arquivo.
      */
     public String getFilename() {
+        
         return filename;  
+        
     }//getFilename()
     
     /*[04]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * O nome do arquivo de secao ou topico. 
+     * 
+     * @param pageIndex O indice da pagina. A primeira tem indice 0.
+     * 
+     * @return O nome do arquivo.
+     */
+    public String getFilename(final int pageIndex) {
+        
+        return filename + (pageIndex * MAX_ROWS_PER_PAGE) + ".html";
+        
+    }//getFilename()
+      
+    /*[05]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
@@ -106,10 +128,28 @@ public abstract class Page implements Comparable {
      * https://clubeceticismo.com.br
      */
     public String getAbsoluteURL() {
+        
         return absoluteURL;
+        
     }//getAbsoluteURL()
     
-    /*[05]----------------------------------------------------------------------
+    /*[06]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * O endereco absoluto da pagina de secao ou topico.
+     * 
+     * @param pageIndex O indice da pagina. A primeira tem indice 0.
+     * 
+     * @return A url absoluta. 
+     */
+    public String getAbsoluteURL(final int pageIndex) {
+        
+        return absoluteURL + "&start=" + (pageIndex * MAX_ROWS_PER_PAGE);
+        
+    }//getAbsoluteURL()
+    
+    /*[07]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
@@ -124,7 +164,9 @@ public abstract class Page implements Comparable {
      */
     @Override
     public int compareTo(Object page) {
+        
         return ( getId() - ((Page)page).getId() );
+        
     }//compareTo()
     
 }//classe abstrata Page

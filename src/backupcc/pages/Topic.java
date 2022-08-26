@@ -5,39 +5,32 @@ import java.util.regex.Pattern;
 
 /**
  * Um objeto desta classe coleta e retorna informacoes sobre uma pagina de 
- * secao do forum. Estes dados sao obtidos das paginas de Header.
+ * topico do forum. Estes dados sao obtidos das paginas de Sections.
  * 
- * Um trecho de codigo HTML, contendo dados de uma secao, deve ser enviado como
+ * Um trecho de codigo HTML, contendo dados de um topico, deve ser enviado como
  * argumento ao construtor da classe. E deste bloco de codigo o construtor ira
- * obter a ID, NAME, FILENAME e URL ABSOLUTE desta section.
+ * obter a ID, NAME, FILENAME e URL ABSOLUTE deste topico.
  * 
- * Portanto um metodo deverah varrer o arquivo fonte de cada pagina de header em 
+ * Portanto um metodo deverah varrer o arquivo fonte de cada pagina de secao em 
  * busca destes blocos de codigo, criando objetos desta classe. Um para cada
- * secao apontada na pagina de header que encontrar.
+ * topico apontado na pagina de secao que encontrar.
  *
  * @author "Pedro Reis"
- * @since 24 de agosto de 2022
+ * @since 25 de agosto de 2022
  * @version 1.0
  */
-public final class Section extends Page {
-    
-    private final int numberOfPages;
+public final class Topic extends Page {
     
     /*
-     * Regexp para localizar os dados de uma Section na pagina do Header ao qual
-     * essa Section pertence. Estes dados estao sempre inseridos no escopo de
-     * uma tag a localizavel por este Pattern.
+     * Regexp para localizar os dados de um Topic na pagina de Section a qual
+     * este topic pertence.
      */
     private static final Pattern FINDER_REGEXP = 
         Pattern.compile(
             "<a href=\"[.]/viewforum[.]php[?]f=.+?" +
-            "class=\"forumtitle\" data-id=\"(\\d+)\">(.+)</a>" +
-            "(.|\\n)+?" +
-            "<span class=\"dfn\">Tópicos</span>: " +
-            "<span class=\"value\">(\\d+)</span><span class=\"comma\">"
+            "class=\"forumtitle\" data-id=\"(\\d+)\">(.+)</a>"
         ); 
- 
-    
+     
     /*[00]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
@@ -52,7 +45,7 @@ public final class Section extends Page {
      * regexp nao conseguir fazer o parse desse bloco de codigo. Sinalizando um
      * bug do programa ou que o padrao das paginas do forum foi alterado.
      */
-    public Section(final String htmlBlock) throws UnexpectedHtmlFormatException{
+    public Topic(final String htmlBlock) throws UnexpectedHtmlFormatException{
          
         /*
         Localiza a id e o nome da Section no htmlBlock, que por sua vez foi 
@@ -64,12 +57,10 @@ public final class Section extends Page {
             
             /* Estes campos sao declarados na super classe Page */
             id = Integer.valueOf(matcher.group(1));
-            filename = "f=" + id + "&start=";
+            filename = "f=" + id + ".html";
             name = matcher.group(2);
             absoluteURL = 
                 backupcc.net.Util.FORUM_URL + "/viewforum.php?f=" + id;
-            int numberOfTopics = Integer.valueOf(matcher.group(4));
-            numberOfPages = ((numberOfTopics - 1) / MAX_ROWS_PER_PAGE) + 1;
         }
         /*
         Se os dados do bloco if nao puderam ser localizados, ha um bug no
@@ -99,18 +90,5 @@ public final class Section extends Page {
         
     }//getFinder()
     
-    /*[02]----------------------------------------------------------------------
-    
-    --------------------------------------------------------------------------*/
-    /**
-     * Retorna o numero de paginas que tem esta secao subtraido de um.
-     * 
-     * @return O numero de paginas da secao menos um.
-     */
-    public int getNumberOfPages() {
-        
-        return numberOfPages;
-        
-    }//getNumberOfPagesMinusOne()
-    
-}//classe Section
+}//classe Topic
+
