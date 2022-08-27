@@ -1,11 +1,15 @@
 package backupcc.fetch;
 
+import static backupcc.file.Util.readTextFile;
 import static backupcc.net.Util.downloadUrl2Pathname;
 import backupcc.pages.Section;
+import backupcc.pages.Topic;
 import backupcc.pages.UnexpectedHtmlFormatException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Classe encarregada de localizar (nas paginas dos headers) o endereco das 
@@ -21,6 +25,9 @@ public final class FetchSections {
     Objeto com os dados da pagina principal do forum.
     */  
     private final backupcc.pages.Main main;
+    
+    private static final Pattern TOPIC_FINDER = 
+        backupcc.pages.Topic.getFinder();
       
     private TreeSet<Section> sections;
     
@@ -41,7 +48,7 @@ public final class FetchSections {
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
-    /**
+    /*
      * Baixa as paginas de secao.
      * 
      * @throws FileNotFoundException Se o caminho para o arquivo nao existir.
@@ -51,11 +58,10 @@ public final class FetchSections {
      * 
      * @throws backupcc.pages.UnexpectedHtmlFormatException
      */
-    public void download() throws
+    private void download() throws
         FileNotFoundException, IOException, UnexpectedHtmlFormatException {
         
         FetchHeaders headersPages = new FetchHeaders(main);
-        headersPages.download();
         
         sections = headersPages.getSections();
          
@@ -81,35 +87,39 @@ public final class FetchSections {
      * @throws IOException
      * @throws UnexpectedHtmlFormatException 
      */
-   /* public TreeSet<Topic> getTopics()
+    public TreeSet<Topic> getTopics()
         throws 
             FileNotFoundException,
             IOException, 
             UnexpectedHtmlFormatException {
         
+        download();
+        
         TreeSet<Topic> topics = new TreeSet<>();
                   
         for (Section section: sections) {
-        
-            String sectionPage = 
-                readTextFile(
-                    backupcc.file.Util.RAW_PAGES + '/' + section.getFilename()
+    
+            for (int i = 0; i < section.getNumberOfPages(); i++) {
+
+                String sectionPage = readTextFile(
+                    backupcc.file.Util.RAW_PAGES + '/' + section.getFilename(i)
                 );
 
-            Matcher matcher = 
-                backupcc.scanner.Topic.getFinder().matcher(sectionPage);
-  
-            while (matcher.find()) {
+                Matcher matcher = TOPIC_FINDER.matcher(sectionPage);
                 
-                Topic topic = new Topic(matcher.group());
-                topics.add(topic);
+                while (matcher.find()) {
+   
+                    Topic topic = new Topic(matcher.group());
+                    topics.add(topic);
 
-            }//while
+                }//while
+    
+            }//for i
         
-        }
+        }//for section
                
         return topics;
         
-    }*///getTopics()
+    }//getTopics()
 
 }//classe FetchSections

@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Classe encarrega de baixar a página principal do forum, localizar (nesta
@@ -30,6 +31,9 @@ public final class FetchMain {
     */
     private final String pathname;
     
+    private static final Pattern HEADER_FINDER = 
+        backupcc.pages.Header.getFinder();
+    
     /*[00]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
@@ -48,7 +52,7 @@ public final class FetchMain {
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/    
-    /**
+    /*
      * Baixa a pagina principal do forum para o diretorio onde todas as paginas
      * brutas (arquivos HTML nao editados pelo programa) serao gravadas.
      * 
@@ -57,7 +61,7 @@ public final class FetchMain {
      * @throws IOException Se ocorrer algum erro de IO ao baixar ou na gravacao
      * do arquivo no disco local.
      */
-    public void download() throws FileNotFoundException, IOException {
+    private void download() throws FileNotFoundException, IOException {
             
         downloadUrl2Pathname(url, pathname);
         
@@ -93,12 +97,13 @@ public final class FetchMain {
             IOException, 
             UnexpectedHtmlFormatException {
         
+        download();
+        
         String mainPage = readTextFile(pathname);
         
         TreeSet <Header> headers; headers = new TreeSet<>();
         
-        Matcher matcher = 
-            backupcc.pages.Header.getFinder().matcher(mainPage);
+        Matcher matcher = HEADER_FINDER.matcher(mainPage);
         
         while (matcher.find()) {
             

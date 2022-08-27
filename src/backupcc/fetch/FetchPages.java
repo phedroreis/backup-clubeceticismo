@@ -32,17 +32,10 @@ public final class FetchPages {
                 backupcc.net.Util.FORUM_URL, "clubeceticismo.com.br.html"
             );
                          
-        FetchSections sectionsPages = new FetchSections(main);
-        sectionsPages.download();
+        FetchTopics topicsPages = new FetchTopics(main);
         
-        /*
-        TreeSet<Section> sections = headersPages.getSections();
-        
-        for (Section section: sections) {
-            System.out.println(section.getName());
-        }*/
-  
-        
+        topicsPages.download();
+                
     }//mainPage()
     
     /*[--]----------------------------------------------------------------------

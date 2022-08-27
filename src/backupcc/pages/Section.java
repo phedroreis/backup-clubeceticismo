@@ -32,9 +32,7 @@ public final class Section extends Page {
         Pattern.compile(
             "<a href=\"[.]/viewforum[.]php[?]f=.+?" +
             "class=\"forumtitle\" data-id=\"(\\d+)\">(.+)</a>" +
-            "(.|\\n)+?" +
-            "<span class=\"dfn\">Tópicos</span>: " +
-            "<span class=\"value\">(\\d+)</span><span class=\"comma\">"
+            "[^ł]+?Tópicos</span>: <span class=\"value\">(\\d+)"
         ); 
  
     
@@ -68,7 +66,7 @@ public final class Section extends Page {
             name = matcher.group(2);
             absoluteURL = 
                 backupcc.net.Util.FORUM_URL + "/viewforum.php?f=" + id;
-            int numberOfTopics = Integer.valueOf(matcher.group(4));
+            int numberOfTopics = Integer.valueOf(matcher.group(3));
             numberOfPages = ((numberOfTopics - 1) / MAX_ROWS_PER_PAGE) + 1;
         }
         /*
@@ -103,7 +101,7 @@ public final class Section extends Page {
     
     --------------------------------------------------------------------------*/
     /**
-     * Retorna o numero de paginas que tem esta secao subtraido de um.
+     * Retorna o numero de paginas que tem esta secao.
      * 
      * @return O numero de paginas da secao menos um.
      */
@@ -111,6 +109,6 @@ public final class Section extends Page {
         
         return numberOfPages;
         
-    }//getNumberOfPagesMinusOne()
+    }//getNumberOfPages()
     
 }//classe Section

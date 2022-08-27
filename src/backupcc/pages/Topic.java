@@ -21,25 +21,27 @@ import java.util.regex.Pattern;
  */
 public final class Topic extends Page {
     
+    private final int numberOfPages;
+    
     /*
      * Regexp para localizar os dados de um Topic na pagina de Section a qual
      * este topic pertence.
      */
     private static final Pattern FINDER_REGEXP = 
         Pattern.compile(
-            "<a href=\"[.]/viewforum[.]php[?]f=.+?" +
-            "class=\"forumtitle\" data-id=\"(\\d+)\">(.+)</a>"
+            "<a href=\"[.]/viewtopic[.]php[?].+?t=(\\d+).+?class=" +
+            "\"topictitle\">(.+?)</a>[^ł]+?<dd class=\"posts\">(\\d+)"
         ); 
      
     /*[00]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
-     * Construtor da classe extrai os dados de uma Section a partir de um bloco
-     * de codigo contido no codigo fonte de uma pagina de Header do forum.
+     * Construtor da classe extrai os dados de um topico a partir de um bloco
+     * de codigo contido no codigo fonte de uma pagina de secao do forum.
      * 
-     * @param htmlBlock O bloco de codigo HTML da pagina Header do forum de
-     * onde se pode extrair dados de uma Section.
+     * @param htmlBlock O bloco de codigo HTML da pagina de secao do forum de
+     * onde se pode extrair dados de um topico.
      *   
      * @throws backupcc.pages.UnexpectedHtmlFormatException No caso da
      * regexp nao conseguir fazer o parse desse bloco de codigo. Sinalizando um
@@ -57,10 +59,14 @@ public final class Topic extends Page {
             
             /* Estes campos sao declarados na super classe Page */
             id = Integer.valueOf(matcher.group(1));
-            filename = "f=" + id + ".html";
+            filename = "t=" + id + "&start=";
             name = matcher.group(2);
             absoluteURL = 
-                backupcc.net.Util.FORUM_URL + "/viewforum.php?f=" + id;
+                backupcc.net.Util.FORUM_URL + "/viewtopic.php?t=" + id;
+            int numberOfAnswers = Integer.valueOf(matcher.group(3));
+            numberOfPages = (numberOfAnswers / MAX_ROWS_PER_PAGE) + 1;
+            
+
         }
         /*
         Se os dados do bloco if nao puderam ser localizados, ha um bug no
@@ -89,6 +95,20 @@ public final class Topic extends Page {
         return FINDER_REGEXP;
         
     }//getFinder()
+    
+    /*[02]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Retorna o numero de paginas que tem esta secao.
+     * 
+     * @return O numero de paginas da secao menos um.
+     */
+    public int getNumberOfPages() {
+        
+        return numberOfPages;
+        
+    }//getNumberOfPages()
     
 }//classe Topic
 
