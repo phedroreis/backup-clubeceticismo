@@ -114,6 +114,9 @@ public abstract class Page implements Comparable {
      */
     public String getFilename(final int pageIndex) {
         
+        if (pageIndex == 0)
+            return filename.replace("&start=", "") + ".html";
+        
         return filename + (pageIndex * MAX_ROWS_PER_PAGE) + ".html";
         
     }//getFilename()
@@ -144,6 +147,8 @@ public abstract class Page implements Comparable {
      * @return A url absoluta. 
      */
     public String getAbsoluteURL(final int pageIndex) {
+        
+        if (pageIndex == 0) return absoluteURL;
         
         return absoluteURL + "&start=" + (pageIndex * MAX_ROWS_PER_PAGE);
         

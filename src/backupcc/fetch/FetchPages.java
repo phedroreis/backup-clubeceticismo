@@ -1,6 +1,7 @@
 package backupcc.fetch;
 
 import static backupcc.file.Util.mkDirs;
+import backupcc.incremental.Incremental;
 import backupcc.pages.UnexpectedHtmlFormatException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,7 +26,9 @@ public final class FetchPages {
     public static void downloadPages() throws
         IOException, FileNotFoundException, UnexpectedHtmlFormatException {
         
-        mkDirs();
+        mkDirs(backupcc.file.Util.RAW_PAGES);
+        
+        Incremental.initialize();
         
         backupcc.pages.Main main = 
             new backupcc.pages.Main(
@@ -35,8 +38,10 @@ public final class FetchPages {
         FetchTopics topicsPages = new FetchTopics(main);
         
         topicsPages.download();
+        
+        Incremental.saveLastPostsFile();
                 
-    }//mainPage()
+    }//downloadPages()
     
     /*[--]----------------------------------------------------------------------
     

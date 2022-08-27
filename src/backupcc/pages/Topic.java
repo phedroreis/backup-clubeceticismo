@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  */
 public final class Topic extends Page {
     
-    private final int numberOfPages;
+    private final int numberOfPosts;
     
     /*
      * Regexp para localizar os dados de um Topic na pagina de Section a qual
@@ -63,10 +63,7 @@ public final class Topic extends Page {
             name = matcher.group(2);
             absoluteURL = 
                 backupcc.net.Util.FORUM_URL + "/viewtopic.php?t=" + id;
-            int numberOfAnswers = Integer.valueOf(matcher.group(3));
-            numberOfPages = (numberOfAnswers / MAX_ROWS_PER_PAGE) + 1;
-            
-
+            numberOfPosts = Integer.valueOf(matcher.group(3)) + 1;
         }
         /*
         Se os dados do bloco if nao puderam ser localizados, ha um bug no
@@ -77,7 +74,7 @@ public final class Topic extends Page {
             "Can't parse HTML to find section data"
         );
          
-    }//Header()
+    }//construtor
     
     /*[01]----------------------------------------------------------------------
     
@@ -100,13 +97,43 @@ public final class Topic extends Page {
     
     --------------------------------------------------------------------------*/
     /**
-     * Retorna o numero de paginas que tem esta secao.
+     * Retorna o numero de posts que tem o topico. 
      * 
-     * @return O numero de paginas da secao menos um.
+     * @return O numero de respostas que tem o topico.
+     */
+    public int getNumberOfPosts() {
+        
+        return numberOfPosts;
+        
+    }//getNumberOfPosts()
+    
+    /*[03]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Retorna o numero da pagina que tem o post de numero postNumber.
+     * 
+     * @param postNumber O indice do post.
+     * 
+     * @return O numero da pagina.
+     */
+    public static int getPageNumberOfThisPost(final int postNumber) {
+        
+        return ( (postNumber - 1) / MAX_ROWS_PER_PAGE ) + 1;
+        
+    }//getPageNumberOfThisPost()
+    
+    /*[04]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Retorna o numero de paginas que tem este topico.
+     * 
+     * @return O numero de paginas do topico.
      */
     public int getNumberOfPages() {
         
-        return numberOfPages;
+        return getPageNumberOfThisPost(numberOfPosts);
         
     }//getNumberOfPages()
     

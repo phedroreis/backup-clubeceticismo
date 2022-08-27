@@ -1,6 +1,7 @@
 package backupcc.fetch;
 
 import static backupcc.file.Util.readTextFile;
+import backupcc.incremental.Incremental;
 import static backupcc.net.Util.downloadUrl2Pathname;
 import backupcc.pages.Section;
 import backupcc.pages.Topic;
@@ -110,6 +111,12 @@ public final class FetchSections {
                 while (matcher.find()) {
    
                     Topic topic = new Topic(matcher.group());
+                    
+                    Incremental.updateLastPostNumber(
+                        topic.getId(), 
+                        topic.getNumberOfPosts()
+                    );
+                    
                     topics.add(topic);
 
                 }//while

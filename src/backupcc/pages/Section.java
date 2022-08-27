@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  */
 public final class Section extends Page {
     
-    private final int numberOfPages;
+    private final int numberOfTopics;
     
     /*
      * Regexp para localizar os dados de uma Section na pagina do Header ao qual
@@ -34,8 +34,7 @@ public final class Section extends Page {
             "class=\"forumtitle\" data-id=\"(\\d+)\">(.+)</a>" +
             "[^ł]+?Tópicos</span>: <span class=\"value\">(\\d+)"
         ); 
- 
-    
+     
     /*[00]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
@@ -66,8 +65,8 @@ public final class Section extends Page {
             name = matcher.group(2);
             absoluteURL = 
                 backupcc.net.Util.FORUM_URL + "/viewforum.php?f=" + id;
-            int numberOfTopics = Integer.valueOf(matcher.group(3));
-            numberOfPages = ((numberOfTopics - 1) / MAX_ROWS_PER_PAGE) + 1;
+            numberOfTopics = Integer.valueOf(matcher.group(3));
+           
         }
         /*
         Se os dados do bloco if nao puderam ser localizados, ha um bug no
@@ -78,7 +77,7 @@ public final class Section extends Page {
             "Can't parse HTML to find section data"
         );
          
-    }//Header()
+    }//construtor
     
     /*[01]----------------------------------------------------------------------
     
@@ -97,17 +96,32 @@ public final class Section extends Page {
         
     }//getFinder()
     
+        
     /*[02]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Retorna o numero de topicos que tem esta secao.
+     * 
+     * @return O numero de topicos da secao.
+     */
+    public int getNumberOfTopics() {
+        
+        return numberOfTopics;
+        
+    }//getNumberOfTopics()
+    
+    /*[03]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
      * Retorna o numero de paginas que tem esta secao.
      * 
-     * @return O numero de paginas da secao menos um.
+     * @return O numero de paginas da secao.
      */
     public int getNumberOfPages() {
         
-        return numberOfPages;
+        return ((numberOfTopics - 1) / MAX_ROWS_PER_PAGE) + 1;
         
     }//getNumberOfPages()
     

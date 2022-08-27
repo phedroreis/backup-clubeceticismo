@@ -1,5 +1,6 @@
 package backupcc.fetch;
 
+import backupcc.incremental.Incremental;
 import static backupcc.net.Util.downloadUrl2Pathname;
 import backupcc.pages.Topic;
 import backupcc.pages.UnexpectedHtmlFormatException;
@@ -8,9 +9,7 @@ import java.io.IOException;
 import java.util.TreeSet;
 
 /**
- * Classe encarregada de localizar (nas paginas dos headers) o endereco das 
- * paginas das secoes e disponibilizar estes enderecos atraves de um objeto 
- * TreeSet.
+ * Classe encarregada de baixar as paginas de topico.
  *
  * @author "Pedro Reis"
  * @since 25 de agosto de 2022
@@ -58,15 +57,21 @@ public final class FetchTopics {
         
         topics = sectionsPages.getTopics();
          
-        for (Topic topic: topics)
+        for (Topic topic: topics) {
             
-            for (int i = 0; i < topic.getNumberOfPages(); i++) {
+            int n = Incremental.retrieveLastPostNumber(topic.getId());
+            
+            int p = Topic.getPageNumberOfThisPost(n + 1);
+            
+            for (int i = p; i < topic.getNumberOfPages(); i++) {
          
                 downloadUrl2Pathname(
                     topic.getAbsoluteURL(i), 
                     backupcc.file.Util.RAW_PAGES + '/' + topic.getFilename(i)
                 );
             }//for i
+            
+        }//for topic
         
     }//download()
 
