@@ -1,5 +1,10 @@
 package backupcc.main;
 
+import static backupcc.fetch.FetchPages.downloadPages;
+import backupcc.pages.UnexpectedHtmlFormatException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 /**
  * Ponto de entrada para execucao da aplicacao.
  * 
@@ -9,15 +14,16 @@ package backupcc.main;
  */
 public class Main {
     
-    /*[00]----------------------------------------------------------------------
+    /*[--]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
-    /**
-     * @param args Parametros de linha de comando (nao usado)
-     */
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+        throws 
+            IOException,
+            FileNotFoundException, 
+            UnexpectedHtmlFormatException {
         
-        
+        downloadPages();
         
     }//main()
     

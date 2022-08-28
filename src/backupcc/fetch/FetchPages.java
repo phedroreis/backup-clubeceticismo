@@ -39,7 +39,7 @@ public final class FetchPages {
         
         topicsPages.download();
         
-        Incremental.saveLastPostsFile();
+        Incremental.saveUpdatedLastPostsList();
                 
     }//downloadPages()
     

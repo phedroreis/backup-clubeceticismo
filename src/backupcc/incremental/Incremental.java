@@ -14,64 +14,78 @@ import java.util.regex.Pattern;
  */
 public final class Incremental {
     
-    private static final String INC_DIR = 
+    private static final String INCREMENTAL_DATA_DIR = 
         backupcc.file.Util.FORUM_HOME + "/incremental";
     
-    private static final String LAST_POSTS_FILE = "last-posts.dat";
+    private static final String LIST_OF_LAST_POSTNUMBERS_PER_TOPIC =
+        INCREMENTAL_DATA_DIR + "/last-posts.dat";
     
-    private static final String LAST_POSTS_PATHNAME =
-        INC_DIR + '/' + LAST_POSTS_FILE;
+    private static String previousLastPostsList;
     
-    private static String lastBackupLastPosts;
+    private static StringBuilder updatedLastPostsList;
     
-    private static StringBuilder thisBackupLastPosts;
+    /*[00]----------------------------------------------------------------------
     
+    --------------------------------------------------------------------------*/
     public static void initialize() throws IOException {
         
-        String testFile = null;
+        String tryGetPreviousLastPostsList = null;
         
         try {
             
-            testFile = backupcc.file.Util.readTextFile(LAST_POSTS_PATHNAME);
+            tryGetPreviousLastPostsList = backupcc.file.Util.readTextFile(
+                LIST_OF_LAST_POSTNUMBERS_PER_TOPIC
+            );
             
-        }
-        
+        }        
         catch (NoSuchFileException | FileNotFoundException e) {
             
-            backupcc.file.Util.mkDirs(INC_DIR);
+            backupcc.file.Util.mkDirs(INCREMENTAL_DATA_DIR);
                     
         }
         
-        lastBackupLastPosts = testFile;
+        previousLastPostsList = tryGetPreviousLastPostsList;
                 
-        thisBackupLastPosts = new StringBuilder(16384);
+        updatedLastPostsList = new StringBuilder(16384);
         
     }//initialize()
     
-    public static int retrieveLastPostNumber(final int topicId) {
+    /*[00]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    public static int lastPostOnPreviousBackup(final int topicId) {
         
-        if (lastBackupLastPosts == null) return 0;//Nenhum backup ainda
+        if (previousLastPostsList == null) return 0;//Nenhum backup ainda
         
         Pattern find = Pattern.compile("<" + topicId + " (\\d+)>");
         
-        Matcher matcher = find.matcher(lastBackupLastPosts);
+        Matcher matcher = find.matcher(previousLastPostsList);
         
         if (matcher.find()) return Integer.valueOf(matcher.group(1));
         
-        return 0;//Topico inexistente quando do ultimo backup
+        return 0;//Topico ainda inexistente quando do ultimo backup
     }
     
-    public static void updateLastPostNumber(final int topicId, final int postNumber) {
+    /*[00]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    public static void updateLastPostNumber(
+        final int topicId, 
+        final int postNumber
+    ) {
         
-        thisBackupLastPosts.append('<').append(topicId).append(' ').
+        updatedLastPostsList.append('<').append(topicId).append(' ').
             append(postNumber).append('>');
     }
     
-    public static void saveLastPostsFile() throws IOException {
+    /*[00]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    public static void saveUpdatedLastPostsList() throws IOException {
         
         backupcc.file.Util.writeTextFile(
-            LAST_POSTS_PATHNAME, 
-            thisBackupLastPosts.toString()
+            LIST_OF_LAST_POSTNUMBERS_PER_TOPIC, 
+            updatedLastPostsList.toString()
         );
         
     }  

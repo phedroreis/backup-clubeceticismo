@@ -59,17 +59,30 @@ public final class FetchTopics {
          
         for (Topic topic: topics) {
             
-            int n = Incremental.retrieveLastPostNumber(topic.getId());
+            int lastPostNumberOnPreviousBackup = 
+                Incremental.lastPostOnPreviousBackup(topic.getId());
             
-            int p = Topic.getPageNumberOfThisPost(n + 1);
+            if (topic.getNumberOfPosts() > lastPostNumberOnPreviousBackup) {
             
-            for (int i = p; i < topic.getNumberOfPages(); i++) {
-         
-                downloadUrl2Pathname(
-                    topic.getAbsoluteURL(i), 
-                    backupcc.file.Util.RAW_PAGES + '/' + topic.getFilename(i)
+                int firstPageToDownload = Topic.getPageNumberOfThisPost(
+                    lastPostNumberOnPreviousBackup + 1
                 );
-            }//for i
+                
+                int lastPageToDownload = topic.getNumberOfPages();
+
+                for (
+                    int i = firstPageToDownload - 1; i < lastPageToDownload; i++
+                ) {
+   
+                    downloadUrl2Pathname(
+                        topic.getAbsoluteURL(i), 
+                        backupcc.file.Util.RAW_PAGES + '/' + 
+                        topic.getFilename(i)
+                    );
+                    
+                }//for i
+            
+            }//if
             
         }//for topic
         
