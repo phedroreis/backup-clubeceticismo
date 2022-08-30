@@ -10,6 +10,11 @@ import static backupcc.strings.Util.repeatChar;
  * @author "Pedro Reis"
  */
 public class ProgressBar {
+    /*
+    Largura padrao da barra de progresso para ser utilizada por todas as 
+    ProgressBar do programa.
+    */
+    public static final int LENGTH = 50;
     
     /*
     Total de itens que serao processados
@@ -26,9 +31,13 @@ public class ProgressBar {
     */
     private int filled;
     
+    private int percent;
+    
     private final int foregroundColor;
     
     private final int backgroundColor;
+    
+    private boolean hidden;
     
     /*[00]----------------------------------------------------------------------
     
@@ -56,6 +65,8 @@ public class ProgressBar {
         foregroundColor = fg;
         backgroundColor = bg;
         filled = 0;
+        percent = 0;
+        hidden = true;
          
     }//construtor
             
@@ -91,6 +102,10 @@ public class ProgressBar {
      */
     public void show() {
         
+        hidden = false;
+        
+        Tui.println(" ");
+        
         if (Tui.isWindowsOS()) {
               
             System.out.println("0%|" + repeatChar(' ', barLength - 2) + "|100%");
@@ -104,6 +119,7 @@ public class ProgressBar {
 
             Tui.hideCursor();
             System.out.print(
+                "(" + percent +"%)  " +
                 "0%[" + 
                 repeatChar('#', filled) +
                 repeatChar(' ', barLength - filled) + 
@@ -126,13 +142,20 @@ public class ProgressBar {
      */
     public void update(final int done) {
         
+        if (hidden) return;
+        
         if (Tui.cursorMoved) show();
         
         int f = done * barLength / total;
+        int p = done * 100 / total;
         
-        if (f <= filled) return;
-        
+        if (Tui.isWindowsOS())
+            if (f <= filled) return;
+        else 
+            if (p <= percent) return;
+          
         filled = f;
+        percent = p;
         
        if (Tui.isWindowsOS()) {
               
@@ -142,6 +165,7 @@ public class ProgressBar {
         else { 
           
             System.out.print(
+                "(" + percent +"%)  " +
                 "0%[" + 
                 repeatChar('#', filled) +
                 repeatChar(' ', barLength - filled) + 
@@ -151,7 +175,10 @@ public class ProgressBar {
             Tui.resetCursorPosition();
         }
         
-        if (done == total) Tui.restoreTerminalDefaults();
+        if (done == total) {
+            Tui.restoreTerminalDefaults();
+            Tui.println(" ");
+        }
              
     }//update()
     

@@ -4,6 +4,7 @@ import backupcc.incremental.Incremental;
 import static backupcc.net.Util.downloadUrl2Pathname;
 import backupcc.pages.Topic;
 import backupcc.pages.UnexpectedHtmlFormatException;
+import backupcc.tui.ProgressBar;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.TreeSet;
@@ -21,6 +22,8 @@ public final class FetchTopics {
     */  
     private final backupcc.pages.Main main;
     
+    private final int color;
+    
     private TreeSet<Topic> topics;
         
     /*[00]----------------------------------------------------------------------
@@ -34,6 +37,7 @@ public final class FetchTopics {
     public FetchTopics(final backupcc.pages.Main main) {
         
         this.main = main;
+        color = backupcc.tui.Tui.GREEN;
         
     }//construtor
     
@@ -56,6 +60,24 @@ public final class FetchTopics {
         FetchSections sectionsPages = new FetchSections(main);
         
         topics = sectionsPages.getTopics();
+        
+        backupcc.tui.Tui.println(" ");
+        backupcc.tui.Tui.printlnc(
+            "Obtendo p\u00E1ginas de t\u00F3picos ...", 
+            color
+        );
+         
+        ProgressBar pBar = 
+            new ProgressBar(
+                topics.size(), backupcc.tui.ProgressBar.LENGTH, color
+            );
+        
+        int countTopics = 0;
+        
+        if (!backupcc.incremental.Incremental.isIncremental()) 
+            pBar.show();        
+        else
+            backupcc.tui.Tui.println(" ");
          
         for (Topic topic: topics) {
             
@@ -73,7 +95,15 @@ public final class FetchTopics {
                 for (
                     int i = firstPageToDownload - 1; i < lastPageToDownload; i++
                 ) {
-   
+                    
+                    if (backupcc.incremental.Incremental.isIncremental()) 
+                        
+                        backupcc.tui.Tui.printlnc(
+                            "Baixando " + 
+                            topic.getName() + " [" + (i+1) + "] ...", 
+                            color
+                        );
+                    
                     downloadUrl2Pathname(
                         topic.getAbsoluteURL(i), 
                         backupcc.file.Util.RAW_PAGES + '/' + 
@@ -83,6 +113,8 @@ public final class FetchTopics {
                 }//for i
             
             }//if
+            
+            pBar.update(++countTopics);
             
         }//for topic
         

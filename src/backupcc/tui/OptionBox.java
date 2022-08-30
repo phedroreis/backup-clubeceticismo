@@ -206,6 +206,8 @@ public class OptionBox {
      */
     public char showBox() {
         
+        Tui.println(" ");
+        
         writeln(pad(UPPER_HALF_BLOCK, msgs[0], innerBoxWidth), frameColor);
           
         for (int i = 1; i < msgs.length; i++) writeln(msgs[i], msgsColor);
@@ -252,16 +254,58 @@ public class OptionBox {
         return c;
         
     }//showBox()
-      
-    public static void main(String[] args) {
-        
-        String[] boxLines= {"Título", "LInha1...\n", "Linha2", "Linha3"};
-        String[] options = {"Aborta", "Repete", "Nova linha"};
-        
-        OptionBox op = new OptionBox(boxLines, options, "arn", Tui.YELLOW, Tui.BLUE);
-        
-        op.showBox();
-        
-    }
     
+    /*[00]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Um OptionBox para abortar o programa em caso de erro fatal.
+     * 
+     * @param msgs As mensagens do box.
+     * 
+     */
+    public static void abortBox(final String[] msgs) {
+        
+        String[] aux = new String[msgs.length + 1]; aux[0] = "Erro Fatal!";
+        
+        System.arraycopy(msgs, 0, aux, 1, msgs.length);
+         
+        String[] options = {
+            "< Qualquer tecla + ENTER > para terminar."
+        };
+
+        OptionBox o = new OptionBox(aux, options, ".", Tui.RED, Tui.WHITE);
+        
+        o.showBox();
+        
+        System.exit(0);
+
+    }//abortBox()
+      
+    /*[00]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Um OptionBox para mensagens de aviso.
+     * 
+     * @param msgs As mensagens do box.
+     * 
+     */
+    public static void warningBox(final String[] msgs) {
+        
+        String[] aux = new String[msgs.length + 1]; aux[0] = "Aviso!";
+        
+        System.arraycopy(msgs, 0, aux, 1, msgs.length);
+          
+        String[] options = {
+            "Prosseguir mesmo assim",
+            "Abortar"
+        };
+
+        OptionBox o = new OptionBox(aux, options, "pa", Tui.YELLOW, Tui.WHITE);
+        
+        if (o.showBox() == 'a') System.exit(0);
+
+    }//warningBox()
+         
 }//classe OptionBox

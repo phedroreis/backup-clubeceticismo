@@ -1,5 +1,6 @@
 package backupcc.fetch;
 
+import static backupcc.fetch.FetchPages.specialPrintln;
 import static backupcc.file.Util.readTextFile;
 import backupcc.incremental.Incremental;
 import static backupcc.net.Util.downloadUrl2Pathname;
@@ -27,6 +28,8 @@ public final class FetchSections {
     */  
     private final backupcc.pages.Main main;
     
+    private final int color;
+    
     private static final Pattern TOPIC_FINDER = 
         backupcc.pages.Topic.getFinder();
       
@@ -43,6 +46,7 @@ public final class FetchSections {
     public FetchSections(final backupcc.pages.Main main) {
         
         this.main = main;
+        color = backupcc.tui.Tui.BLUE;
         
     }//construtor
     
@@ -72,7 +76,9 @@ public final class FetchSections {
          
                 downloadUrl2Pathname(
                     section.getAbsoluteURL(i), 
-                    backupcc.file.Util.RAW_PAGES + '/' + section.getFilename(i)
+                    backupcc.file.Util.RAW_PAGES + '/' + section.getFilename(i),
+                    section.getName() + " [" + (i + 1) + "]",
+                    color
                 );
             }//for i
         
@@ -108,11 +114,18 @@ public final class FetchSections {
 
                 Matcher matcher = TOPIC_FINDER.matcher(sectionPage);
                 
+                specialPrintln(
+                    "Coletando dados de ", 
+                    "t\u00F3picos",
+                    " em " + section.getName() + "  [" + (i+1) + "] ...", 
+                    color
+                );                
+                
                 while (matcher.find()) {
    
                     Topic topic = new Topic(matcher.group());
                     
-                    Incremental.updateLastPostNumber(
+                    Incremental.updateLastPostNumberList(
                         topic.getId(), 
                         topic.getNumberOfPosts()
                     );

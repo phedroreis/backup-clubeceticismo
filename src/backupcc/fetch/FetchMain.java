@@ -1,5 +1,6 @@
 package backupcc.fetch;
 
+import static backupcc.fetch.FetchPages.specialPrintln;
 import static backupcc.file.Util.readTextFile;
 import static backupcc.net.Util.downloadUrl2Pathname;
 import backupcc.pages.Header;
@@ -20,16 +21,10 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 public final class FetchMain {
-    /*
-    A URL de acesso ao forum.
-    */
-    private final String url;
     
-    /*
-    Pathname do arquivo onde serah gravado o codigo fonte da pagina principal do
-    forum.
-    */
-    private final String pathname;
+    private final backupcc.pages.Main main;
+    
+    private final int color;
     
     private static final Pattern HEADER_FINDER = 
         backupcc.pages.Header.getFinder();
@@ -44,9 +39,9 @@ public final class FetchMain {
      */
     public FetchMain(final backupcc.pages.Main main) {
         
-        url = main.getAbsoluteURL();
-        pathname = backupcc.file.Util.RAW_PAGES + '/' + main.getFilename();
-        
+        this.main = main;
+        color = backupcc.tui.Tui.MAGENTA;
+           
     }//construtor
     
     /*[01]----------------------------------------------------------------------
@@ -63,7 +58,12 @@ public final class FetchMain {
      */
     private void download() throws FileNotFoundException, IOException {
             
-        downloadUrl2Pathname(url, pathname);
+        downloadUrl2Pathname(
+            main.getAbsoluteURL(),
+            backupcc.file.Util.RAW_PAGES + '/' + main.getFilename(),
+            main.getName(),
+            color
+        );
         
     }//download()
     
@@ -99,11 +99,20 @@ public final class FetchMain {
         
         download();
         
-        String mainPage = readTextFile(pathname);
+        String mainPage = readTextFile(
+            backupcc.file.Util.RAW_PAGES + '/' + main.getFilename()
+        );
         
         TreeSet <Header> headers; headers = new TreeSet<>();
         
         Matcher matcher = HEADER_FINDER.matcher(mainPage);
+        
+        specialPrintln(
+            "Coletando dados de ", 
+            "cabe\u00E7alhos",
+            " na " + main.getName() + " ...", 
+            color
+        );
         
         while (matcher.find()) {
             

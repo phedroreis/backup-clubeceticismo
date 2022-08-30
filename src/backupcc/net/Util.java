@@ -46,6 +46,7 @@ public class Util {
      * neste caminho devem existir ou uma excecao serah lancada. Se um arquivo 
      * com o nome indicado em pathname nao existir, serah criado um arquivo com
      * esse nome.
+     * @param page
      * 
      * @throws java.net.MalformedURLException Caso a URL passada ao metodo seja
      * mal formada.
@@ -64,17 +65,30 @@ public class Util {
         final String pathname
     ) throws MalformedURLException, FileNotFoundException, IOException {
         
-        try (FileOutputStream fos = new FileOutputStream(pathname)) {
+        URL theFile = new URL(url);
+        
+        try (
+                
+            FileOutputStream fos = new FileOutputStream(pathname);
 
-            URL download = new URL(url);
-
-            ReadableByteChannel rbc = 
-                Channels.newChannel(download.openStream());
-
+            ReadableByteChannel rbc = Channels.newChannel(theFile.openStream());
+                
+        ) {
+            
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        }
+        }           
 
-    }//downloadUrl2Pathname()
+    }//downloadUrl2Pathname()   
     
+    public static void downloadUrl2Pathname(
+        final String url,
+        final String pathname,
+        final String name,
+        final int color
+    ) throws MalformedURLException, FileNotFoundException, IOException {
+        
+        backupcc.tui.Tui.printlnc("Obtendo " + name + " ...", color);
+        downloadUrl2Pathname(url, pathname);
+    }
     
 }//classe Util

@@ -1,5 +1,6 @@
 package backupcc.fetch;
 
+import static backupcc.fetch.FetchPages.specialPrintln;
 import static backupcc.file.Util.readTextFile;
 import static backupcc.net.Util.downloadUrl2Pathname;
 import backupcc.pages.Header;
@@ -23,6 +24,8 @@ public final class FetchHeaders {
     
     private final backupcc.pages.Main main;
     
+    private final int color;
+    
     private static final Pattern SECTION_FINDER = 
         backupcc.pages.Section.getFinder();
     
@@ -39,6 +42,7 @@ public final class FetchHeaders {
     public FetchHeaders(final backupcc.pages.Main main) {
         
         this.main = main;
+        color = backupcc.tui.Tui.CYAN;
         
     }//construtor
     
@@ -66,7 +70,9 @@ public final class FetchHeaders {
         for (Header header: headers)    
             downloadUrl2Pathname(
                 header.getAbsoluteURL(), 
-                backupcc.file.Util.RAW_PAGES + '/' + header.getFilename()
+                backupcc.file.Util.RAW_PAGES + '/' + header.getFilename(),
+                header.getName(),
+                color
             );
         
     }//download()
@@ -108,6 +114,13 @@ public final class FetchHeaders {
                 );
 
             Matcher matcher = SECTION_FINDER.matcher(headerPage);
+            
+            specialPrintln(
+                "Coletando dados de ", 
+                "se\u00E7\u00F5es",
+                " em " + header.getName() + " ...", 
+                color
+            );
   
             while (matcher.find()) {
                 

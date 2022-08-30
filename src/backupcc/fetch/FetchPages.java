@@ -1,7 +1,5 @@
 package backupcc.fetch;
 
-import static backupcc.file.Util.mkDirs;
-import backupcc.incremental.Incremental;
 import backupcc.pages.UnexpectedHtmlFormatException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,10 +24,6 @@ public final class FetchPages {
     public static void downloadPages() throws
         IOException, FileNotFoundException, UnexpectedHtmlFormatException {
         
-        mkDirs(backupcc.file.Util.RAW_PAGES);
-        
-        Incremental.initialize();
-        
         backupcc.pages.Main main = 
             new backupcc.pages.Main(
                 backupcc.net.Util.FORUM_URL, "clubeceticismo.com.br.html"
@@ -38,23 +32,22 @@ public final class FetchPages {
         FetchTopics topicsPages = new FetchTopics(main);
         
         topicsPages.download();
-        
-        Incremental.saveUpdatedLastPostsList();
-                
+               
     }//downloadPages()
     
-    /*[--]----------------------------------------------------------------------
+   /*[02]----------------------------------------------------------------------
     
-    --------------------------------------------------------------------------*/
-    public static void main(String[] args) 
-        throws 
-            IOException,
-            FileNotFoundException, 
-            UnexpectedHtmlFormatException {
+    --------------------------------------------------------------------------*/ 
+    protected static void specialPrintln(
+        final String s1, final String s2, final String s3, final int color
+    ) {
+        backupcc.tui.Tui.printc(s1, color);
+        backupcc.tui.Tui.setDecoration(
+            backupcc.tui.Tui.BOLD + backupcc.tui.Tui.UNDERLINE
+        );
+        backupcc.tui.Tui.print(s2);
+        backupcc.tui.Tui.resetColorsAndDecorations();
+        backupcc.tui.Tui.printlnc(s3, color);
+    }//specialPrintln()
         
-        downloadPages();
-        
-    }//main()
-    
-    
 }//classe FetchPages

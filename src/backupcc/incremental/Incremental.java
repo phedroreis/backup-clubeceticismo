@@ -1,94 +1,273 @@
 package backupcc.incremental;
 
-import java.io.FileNotFoundException;
+import static backupcc.file.Util.INCREMENTAL;
+import static backupcc.file.Util.INCREMENTAL_DATA_BKP;
+import static backupcc.tui.OptionBox.abortBox;
+import static backupcc.tui.OptionBox.warningBox;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
-import java.util.regex.Matcher;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Um arquivo com o numero de posts de cada topico eh gravado ao fim de cada 
+ * backup. No proximo backup, estes dados serao comparados com o numero de 
+ * posts de cada  topico indicado nas paginas de Section do forum. Se entre um
+ * backup e outro, um topico tiver recebido novos posts, as paginas destes 
+ * novos posts (e apenas estas) serao baixadas.
+ * 
+ * Esta classe eh responsavel por ler e gravar o arquivo com o numero de posts
+ * de cada topico alem de fornecer os metodos estaticos necessarios ao 
+ * gerenciamento do backup incremental.
+ * 
  * @author "Pedro Reis"
  * @since 27 de agosto de 2022
  * @version 1.0
  */
 public final class Incremental {
     
-    private static final String INCREMENTAL_DATA_DIR = 
-        backupcc.file.Util.FORUM_HOME + "/incremental";
+    private static final String DELIMITER = ",";
     
-    private static final String LIST_OF_LAST_POSTNUMBERS_PER_TOPIC =
-        INCREMENTAL_DATA_DIR + "/last-posts.dat";
+    private static final char SEPARATOR = ' ';
+   
+    /*
+    Nome do arquivo com a lista de numero de posts por topico.
+    */
+    private static final String POST_LIST_FILENAME =  "last-posts.dat";
     
-    private static String previousLastPostsList;
+    /*
+    Arquivo com o hash de verificacao de POST_LIST_FILENAME
+    */
+    private static final String SHA256_FILENAME = POST_LIST_FILENAME + ".sha";
     
+    /*
+    O pathname do arquivo onde eh gravado o numero de posts de cada topico.
+    */
+    private static final String POST_LIST_PATHNAME =
+        INCREMENTAL + '/' + POST_LIST_FILENAME;
+    
+    private static final File POST_LIST_FILE = new File(POST_LIST_PATHNAME);
+    
+    /*
+    Path do arquivo com o hash de verificacao do arquivo de dados.
+    */
+    private static final String SHA256_PATHNAME =
+        INCREMENTAL + '/' + SHA256_FILENAME;
+    
+    private static final File SHA256_FILE = new File(SHA256_PATHNAME);
+    
+    /*
+    Uma lista com o numero de posts de cada topico ao fim do backup anterior.
+    */    
+    private static HashMap<Integer, Integer> previousLastPostsPerTopic;
+    
+    /*
+    A lista sendo atualizada pelo backup que estiver executando no momento. 
+    */
     private static StringBuilder updatedLastPostsList;
     
-    /*[00]----------------------------------------------------------------------
+    private static boolean backupIncremental;
+         
+    /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
-    public static void initialize() throws IOException {
+    /**
+     * Inicializa o processo incremental verificando se um backup previo jah
+     * foi realizado. Se sim, le o arquivo e carrega os dados do ultimo backup
+     * com o numero de posts em cada topico quando do backup anterior. Em caso 
+     * contrario, se nao houve backup anterior, estes arquivos e o diretorio 
+     * que o contem nao existem e serao entao criados.
+     * 
+     */
+    public static void init() {
         
-        String tryGetPreviousLastPostsList = null;
+        String tryToGetPreviousPostsList = null;
+        String sha256File = null;
+        String sha256 = null;
         
         try {
             
-            tryGetPreviousLastPostsList = backupcc.file.Util.readTextFile(
-                LIST_OF_LAST_POSTNUMBERS_PER_TOPIC
-            );
+            tryToGetPreviousPostsList = 
+                backupcc.file.Util.readTextFile(POST_LIST_PATHNAME);
+            
+            sha256 = backupcc.security.Util.sha256(tryToGetPreviousPostsList);
+            
+            sha256File = backupcc.file.Util.readTextFile(SHA256_PATHNAME);
             
         }        
-        catch (NoSuchFileException | FileNotFoundException e) {
+        catch (NoSuchFileException e) { }
+        catch (IOException e) {
             
-            backupcc.file.Util.mkDirs(INCREMENTAL_DATA_DIR);
+            String[] msgs = { e.getMessage() };
+            
+            abortBox(msgs);
                     
+        }//try-catch
+        
+        if ( 
+            (sha256 == null) || 
+            (sha256File == null) || 
+            (!sha256.equals(sha256File))
+        ) {
+            
+            String[] msgs = {
+                "Dados do backup anterior n\u00E3o existem ou est\u00E3o corrompidos\n",
+                "Se continuar ser\u00E1 iniciado um \"full backup\"\n",
+                "Ou pode abortar e restaurar o backup destes arquivos"
+            };
+
+            warningBox(msgs);
+            
+            /*
+            Deleta arquivos corrompidos antes de fazer full backup
+            */
+            if (SHA256_FILE.exists()) SHA256_FILE.delete();
+            if (POST_LIST_FILE.exists()) POST_LIST_FILE.delete();
+             
+            previousLastPostsPerTopic = null;//backup full
+            
+            backupIncremental = false;
+            
         }
-        
-        previousLastPostsList = tryGetPreviousLastPostsList;
+        else {//backup incremental
+            
+            previousLastPostsPerTopic = new HashMap<>();
+
+            Pattern delimiters = Pattern.compile(DELIMITER);
+
+            String[] split = delimiters.split(tryToGetPreviousPostsList);
+
+            for (String keyValue: split) {
+
+                int separatorPosition = keyValue.indexOf(SEPARATOR);
                 
-        updatedLastPostsList = new StringBuilder(16384);
-        
-    }//initialize()
+                if (separatorPosition == -1) break;
+
+                String key = keyValue.substring(0, separatorPosition);
+
+                String value = keyValue.substring(
+                        separatorPosition + 1, keyValue.length()
+                );
+
+                previousLastPostsPerTopic.put(
+                    Integer.valueOf(key),
+                    Integer.valueOf(value)
+                );
+
+            }//for
+            
+            backupIncremental = true;
+             
+        }//if-else
+                
+        updatedLastPostsList = new StringBuilder(16384);        
+               
+    }//init()
     
-    /*[00]----------------------------------------------------------------------
+    /*[02]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
+    /**
+     * Recebe a Id de um topico e retorna quantos posts havia neste topico 
+     * quando foi realizado o ultimo backup.
+     * 
+     * @param topicId A id do topico.
+     * 
+     * @return Quantos posts havia neste topico no ultimo backup.
+     */
     public static int lastPostOnPreviousBackup(final int topicId) {
+        /*
+        Nao existe backup anterior a este.
+        */
+        if (previousLastPostsPerTopic == null) return 0;
         
-        if (previousLastPostsList == null) return 0;//Nenhum backup ainda
+        Integer lastPost = previousLastPostsPerTopic.get(topicId);
         
-        Pattern find = Pattern.compile("<" + topicId + " (\\d+)>");
+        /*
+        O topico ainda nao havia sido criado quando do backup anterior.
+        */
+        if (lastPost == null) return 0;
         
-        Matcher matcher = find.matcher(previousLastPostsList);
-        
-        if (matcher.find()) return Integer.valueOf(matcher.group(1));
-        
-        return 0;//Topico ainda inexistente quando do ultimo backup
-    }
+        return lastPost;
+                
+    }//lastPostOnPreviousBakcup()
     
-    /*[00]----------------------------------------------------------------------
+    /*[03]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
-    public static void updateLastPostNumber(
+    /**
+     * Insere na lista com o numero de posts de cada topico, o numero de posts
+     * (postNumber) no topico de id = topicId.
+     * 
+     * @param topicId A Id do topico que tera seu numero de posts atualizado.
+     * 
+     * @param postNumber A indice do ultimo post neste topico ou o numero de
+     * posts no topico, o que eh a mesma coisa.   
+     */
+    public static void updateLastPostNumberList(
         final int topicId, 
         final int postNumber
     ) {
         
-        updatedLastPostsList.append('<').append(topicId).append(' ').
-            append(postNumber).append('>');
-    }
+        updatedLastPostsList.append(topicId).append(SEPARATOR).
+            append(postNumber).append(DELIMITER);
+        
+    }//updateLastPostNumberList()
     
-    /*[00]----------------------------------------------------------------------
+    /*[04]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
+    /**
+     * Grava em disco a lista com o numero de posts em cada topico obtida no
+     * backup corrente.
+     * 
+     * @throws IOException Em caso de erro de IO ao tentar gravar o arquivo.
+     */
     public static void saveUpdatedLastPostsList() throws IOException {
         
-        backupcc.file.Util.writeTextFile(
-            LIST_OF_LAST_POSTNUMBERS_PER_TOPIC, 
-            updatedLastPostsList.toString()
-        );
+        if (SHA256_FILE.exists()) 
+            SHA256_FILE.renameTo(
+                new File(INCREMENTAL_DATA_BKP + '/' + SHA256_FILENAME)
+            );
         
-    }  
+        if (POST_LIST_FILE.exists()) 
+            POST_LIST_FILE.renameTo(
+                new File(INCREMENTAL_DATA_BKP + '/' + POST_LIST_FILENAME)
+            );
+        
+        LocalDateTime localDateTime = LocalDateTime.now();
+  
+        DateTimeFormatter formatter = 
+                DateTimeFormatter.ofPattern("dd-MM-yyyy(HH:mm:ss)");
+
+        updatedLastPostsList.append(localDateTime.format(formatter));
+        
+        String postList = updatedLastPostsList.toString();
+         
+        backupcc.file.Util.writeTextFile(
+            SHA256_PATHNAME, 
+            backupcc.security.Util.sha256(postList)
+        );
+                
+        backupcc.file.Util.writeTextFile(POST_LIST_PATHNAME, postList);
+          
+    }//saveUpdatedLastPostsList()  
     
+    /*[05]----------------------------------------------------------------------
     
+    --------------------------------------------------------------------------*/
+    /**
+     * Retorna se o backup sendo realizado eh incremental ou full.
+     * 
+     * @return true se for incremental ou false se nao.
+     */
+    public static boolean isIncremental() {
+        
+        return backupIncremental;
+        
+    }
+       
 }//classe Incremental

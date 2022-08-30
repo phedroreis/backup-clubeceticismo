@@ -21,18 +21,22 @@ public final class Util {
      * estatica. Bem como arquivos de dados e log, e outros necessarios para a
      * construcao da copia estatica.
      */
-    public static final String FORUM_HOME = "./clubeceticismo.com.br";
+    public static final String FORUM_HOME = "./clubeceticismo.com.br"; 
+    
+    public static final String INCREMENTAL = FORUM_HOME + "/incremental";
     
     /**
      * Para este diretorio serao baixados os arquivos com o codigo fonte das 
      * paginas do forum. Este diretorio soh ira conter arquivos nao editados.
      */
-    public static final String RAW_PAGES = FORUM_HOME + "/raw-pages";
+    public static final String RAW_PAGES = INCREMENTAL + "/raw-pages";
     
     /**
      * Diretorio para gravar os arquivos de log e dados.
      */
-    public static final String LOG_DIR = FORUM_HOME + "/log";
+    public static final String LOG_DIR = INCREMENTAL + "/log";
+    
+    public static final String INCREMENTAL_DATA_BKP = INCREMENTAL + "/bkp";
     
     /*[01]----------------------------------------------------------------------
     
@@ -49,9 +53,7 @@ public final class Util {
         
         File dir = new File(path);
         
-        if (!dir.exists() && !dir.mkdirs())
-                
-            throw new IOException("Can't create directory: " + path);
+        if (!dir.exists() && !dir.mkdirs()) throw new IOException(path);
     
     }//mkDirs()
     
