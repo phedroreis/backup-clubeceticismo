@@ -31,13 +31,6 @@ public final class Util {
      */
     public static final String RAW_PAGES = INCREMENTAL + "/raw-pages";
     
-    /**
-     * Diretorio para gravar os arquivos de log e dados.
-     */
-    public static final String LOG_DIR = INCREMENTAL + "/log";
-    
-    public static final String INCREMENTAL_DATA_BKP = INCREMENTAL + "/bkp";
-    
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/

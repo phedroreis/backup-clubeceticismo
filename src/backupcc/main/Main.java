@@ -47,8 +47,7 @@ public class Main {
         try {  
             
             mkDirs(backupcc.file.Util.RAW_PAGES);
-            mkDirs(backupcc.file.Util.INCREMENTAL_DATA_BKP);
-            mkDirs(backupcc.file.Util.LOG_DIR);
+            
         }
         catch (IOException e) {
             
@@ -77,7 +76,7 @@ public class Main {
         
         try {
             
-            Incremental.saveUpdatedLastPostsList();
+            Incremental.finish();
             
         }
         catch (IOException e) {

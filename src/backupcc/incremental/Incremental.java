@@ -1,14 +1,12 @@
 package backupcc.incremental;
 
-import static backupcc.file.Util.INCREMENTAL;
-import static backupcc.file.Util.INCREMENTAL_DATA_BKP;
+import static backupcc.file.Util.RAW_PAGES;
+import static backupcc.file.Util.mkDirs;
 import static backupcc.tui.OptionBox.abortBox;
 import static backupcc.tui.OptionBox.warningBox;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -47,17 +45,18 @@ public final class Incremental {
     O pathname do arquivo onde eh gravado o numero de posts de cada topico.
     */
     private static final String POST_LIST_PATHNAME =
-        INCREMENTAL + '/' + POST_LIST_FILENAME;
-    
-    private static final File POST_LIST_FILE = new File(POST_LIST_PATHNAME);
+        RAW_PAGES + '/' + POST_LIST_FILENAME;
     
     /*
     Path do arquivo com o hash de verificacao do arquivo de dados.
     */
     private static final String SHA256_PATHNAME =
-        INCREMENTAL + '/' + SHA256_FILENAME;
+        RAW_PAGES + '/' + SHA256_FILENAME;
     
-    private static final File SHA256_FILE = new File(SHA256_PATHNAME);
+    /*
+    
+    */
+    private static final File RAW_PAGES_DIR = new File(RAW_PAGES);
     
     /*
     Uma lista com o numero de posts de cada topico ao fim do backup anterior.
@@ -69,6 +68,9 @@ public final class Incremental {
     */
     private static StringBuilder updatedLastPostsList;
     
+   /*
+    Indica se o backup eh incremental ou full.
+    */
     private static boolean backupIncremental;
          
     /*[01]----------------------------------------------------------------------
@@ -78,8 +80,7 @@ public final class Incremental {
      * Inicializa o processo incremental verificando se um backup previo jah
      * foi realizado. Se sim, le o arquivo e carrega os dados do ultimo backup
      * com o numero de posts em cada topico quando do backup anterior. Em caso 
-     * contrario, se nao houve backup anterior, estes arquivos e o diretorio 
-     * que o contem nao existem e serao entao criados.
+     * contrario, se nao houve backup anterior, um full backup serah iniciado.
      * 
      */
     public static void init() {
@@ -98,7 +99,14 @@ public final class Incremental {
             sha256File = backupcc.file.Util.readTextFile(SHA256_PATHNAME);
             
         }        
-        catch (NoSuchFileException e) { }
+        catch (NoSuchFileException e) {
+            
+            /*
+            Se um dos arquivos nao puder ser lido e esta excexao for lancada,
+            entao sha256 serah null ou sha256File serah null, ou ambos serao 
+            null. Nesse caso o bloco "then" do proximo if serah executado.
+            */
+        }
         catch (IOException e) {
             
             String[] msgs = { e.getMessage() };
@@ -114,26 +122,21 @@ public final class Incremental {
         ) {
             
             String[] msgs = {
-                "Dados do backup anterior n\u00E3o existem ou est\u00E3o corrompidos\n",
+                "Dados do backup anterior n\u00E3o existem ou est\u00E3o" +
+                " corrompidos\n",
                 "Se continuar ser\u00E1 iniciado um \"full backup\"\n",
                 "Ou pode abortar e restaurar o backup destes arquivos"
             };
 
             warningBox(msgs);
-            
-            /*
-            Deleta arquivos corrompidos antes de fazer full backup
-            */
-            if (SHA256_FILE.exists()) SHA256_FILE.delete();
-            if (POST_LIST_FILE.exists()) POST_LIST_FILE.delete();
-             
+                         
             previousLastPostsPerTopic = null;//backup full
             
             backupIncremental = false;
             
         }
         else {//backup incremental
-            
+             
             previousLastPostsPerTopic = new HashMap<>();
 
             Pattern delimiters = Pattern.compile(DELIMITER);
@@ -144,18 +147,41 @@ public final class Incremental {
 
                 int separatorPosition = keyValue.indexOf(SEPARATOR);
                 
-                if (separatorPosition == -1) break;
+                if (separatorPosition == -1) {//data do backup
+                    
+                    RAW_PAGES_DIR.renameTo(new File(RAW_PAGES + '-' + keyValue));
 
-                String key = keyValue.substring(0, separatorPosition);
+                    try {
 
-                String value = keyValue.substring(
-                        separatorPosition + 1, keyValue.length()
-                );
+                        mkDirs(RAW_PAGES);
+                    }
+                    catch (IOException e) {
 
-                previousLastPostsPerTopic.put(
-                    Integer.valueOf(key),
-                    Integer.valueOf(value)
-                );
+                        String[] msgs = {
+
+                            "Imposs\u00EDvel criar diret\u00F3rio "  + RAW_PAGES
+
+                        };
+
+                        abortBox(msgs);                
+
+                    }
+                  
+                }
+                else {//ultimo post de um topico
+
+                    String key = keyValue.substring(0, separatorPosition);
+
+                    String value = keyValue.substring(
+                            separatorPosition + 1, keyValue.length()
+                    );
+
+                    previousLastPostsPerTopic.put(
+                        Integer.valueOf(key),
+                        Integer.valueOf(value)
+                    );
+                    
+                }//if-else
 
             }//for
             
@@ -226,35 +252,20 @@ public final class Incremental {
      * 
      * @throws IOException Em caso de erro de IO ao tentar gravar o arquivo.
      */
-    public static void saveUpdatedLastPostsList() throws IOException {
-        
-        if (SHA256_FILE.exists()) 
-            SHA256_FILE.renameTo(
-                new File(INCREMENTAL_DATA_BKP + '/' + SHA256_FILENAME)
-            );
-        
-        if (POST_LIST_FILE.exists()) 
-            POST_LIST_FILE.renameTo(
-                new File(INCREMENTAL_DATA_BKP + '/' + POST_LIST_FILENAME)
-            );
-        
-        LocalDateTime localDateTime = LocalDateTime.now();
-  
-        DateTimeFormatter formatter = 
-                DateTimeFormatter.ofPattern("dd-MM-yyyy(HH:mm:ss)");
-
-        updatedLastPostsList.append(localDateTime.format(formatter));
+    public static void finish() throws IOException {
+             
+        updatedLastPostsList.append(backupcc.datetime.Util.now());
         
         String postList = updatedLastPostsList.toString();
+        
+        backupcc.file.Util.writeTextFile(POST_LIST_PATHNAME, postList);
          
         backupcc.file.Util.writeTextFile(
             SHA256_PATHNAME, 
             backupcc.security.Util.sha256(postList)
         );
-                
-        backupcc.file.Util.writeTextFile(POST_LIST_PATHNAME, postList);
-          
-    }//saveUpdatedLastPostsList()  
+         
+    }//finish()  
     
     /*[05]----------------------------------------------------------------------
     
