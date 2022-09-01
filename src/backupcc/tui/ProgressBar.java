@@ -31,12 +31,18 @@ public class ProgressBar {
     */
     private int filled;
     
+    /*
+    Percentual do processo jah realizado
+    */
     private int percent;
     
     private final int foregroundColor;
     
     private final int backgroundColor;
     
+    /*
+    Se true a barra estah sendo exibida no terminal
+    */
     private boolean hidden;
     
     /*[00]----------------------------------------------------------------------
@@ -182,45 +188,5 @@ public class ProgressBar {
              
     }//update()
     
-    /*[--]----------------------------------------------------------------------
-    
-    --------------------------------------------------------------------------*/
-    /**
-     * Metodo para testes da classe.
-     * 
-     * @param args Nao usado.
-     */
-    public static void main(String[] args) {
-        
-        int tot = 900000;
-        
-        //Tui.ansiCodesDisable();
-        
-        ProgressBar pb = new ProgressBar(tot, 50, Tui.RED, Tui.WHITE);
-        
-        pb.show();
-        
-                
-        for (int i = 0; i <= tot; i++) {
-          
-            if (i==100000) {
-               Tui.restoreTerminalDefaults();
-               Tui.println("");
-               Tui.println("");Tui.println("");Tui.println("");
-               Tui.println("");Tui.println("");Tui.println("");
-               Tui.println("");Tui.println("");
-            }
-            if (i==450000) {
-               Tui.restoreTerminalDefaults();
-               Tui.println("");
-               Tui.println("");Tui.println("");Tui.println("");
-               Tui.println("");Tui.println("");Tui.println("");
-               Tui.println("");Tui.println("");
-            }
-            pb.update(i);
-        }
-        
-      
-    }//main()
     
 }//classe ProgressBar

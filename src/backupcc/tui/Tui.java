@@ -375,22 +375,5 @@ public class Tui {
         
     }//setDecoration()
     
-    /*[--]----------------------------------------------------------------------
-    
-    --------------------------------------------------------------------------*/
-    /**
-     * Metodo main() para testar a classe.
-     * 
-     * @param args Nao usado.
-     */
-    public static void main(String[] args) {
-        
-        setColor(BLUE); 
-        setDecoration(BOLD);
-        System.out.println("AAAAAAAA");
-        hideCursor();
-        showCursor();
-        println("");        
-    }
     
 }//classe Tui
