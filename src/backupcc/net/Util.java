@@ -20,17 +20,17 @@ public class Util {
     /**
      * O protocolo utilizado na conexao com o servidor do forum.
      */
-    public static final String PROTOCOL = "https://";
+    public static final String FORUM_PROTOCOL = "https://";
     
     /**
      * O nome de dominio do forum.
      */
-    public static final String DOMAIN = "clubeceticismo.com.br";
+    public static final String FORUM_DOMAIN = "clubeceticismo.com.br";
     
     /**
      * A URL do forum
      */
-    public static final String FORUM_URL = PROTOCOL + DOMAIN;
+    public static final String FORUM_URL = FORUM_PROTOCOL + FORUM_DOMAIN;
      
     /*[01]---------------------------------------------------------------------
 
@@ -46,7 +46,6 @@ public class Util {
      * neste caminho devem existir ou uma excecao serah lancada. Se um arquivo 
      * com o nome indicado em pathname nao existir, serah criado um arquivo com
      * esse nome.
-     * @param page
      * 
      * @throws java.net.MalformedURLException Caso a URL passada ao metodo seja
      * mal formada.

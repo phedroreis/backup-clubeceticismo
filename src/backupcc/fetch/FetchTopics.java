@@ -96,19 +96,25 @@ public final class FetchTopics {
                     int i = firstPageToDownload - 1; i < lastPageToDownload; i++
                 ) {
                     
-                    if (backupcc.incremental.Incremental.isIncremental()) 
-                        
-                        backupcc.tui.Tui.printlnc(
-                            "Baixando " + 
-                            topic.getName() + " [" + (i+1) + "] ...", 
+                    if (backupcc.incremental.Incremental.isIncremental()) {
+                                            
+                        downloadUrl2Pathname(
+                            topic.getAbsoluteURL(i), 
+                            backupcc.file.Util.RAW_PAGES + '/' + 
+                            topic.getFilename(i),
+                            topic.getName() + " [" + (i+1) +"]",
                             color
                         );
+                    }
+                    else {
                     
-                    downloadUrl2Pathname(
-                        topic.getAbsoluteURL(i), 
-                        backupcc.file.Util.RAW_PAGES + '/' + 
-                        topic.getFilename(i)
-                    );
+                        downloadUrl2Pathname(
+                            topic.getAbsoluteURL(i), 
+                            backupcc.file.Util.RAW_PAGES + '/' + 
+                            topic.getFilename(i)
+                        );
+                        
+                    }//if-else
                     
                 }//for i
             

@@ -26,7 +26,8 @@ public final class FetchPages {
         
         backupcc.pages.Main main = 
             new backupcc.pages.Main(
-                backupcc.net.Util.FORUM_URL, "clubeceticismo.com.br.html"
+                backupcc.net.Util.FORUM_URL, 
+                backupcc.net.Util.FORUM_DOMAIN + ".html"
             );
                          
         FetchTopics topicsPages = new FetchTopics(main);

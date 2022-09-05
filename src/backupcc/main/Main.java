@@ -1,5 +1,6 @@
 package backupcc.main;
 
+import static backupcc.fetch.FetchFiles.fetchFiles;
 import static backupcc.fetch.FetchPages.downloadPages;
 import static backupcc.file.Util.mkDirs;
 import backupcc.incremental.Incremental;
@@ -65,12 +66,17 @@ public class Main {
         try {
             
             downloadPages();
+            fetchFiles();
            
         }
         catch (IOException | UnexpectedHtmlFormatException e) {
             
-            System.err.println(e);
-            System.exit(1);
+            String[] msgs = {
+                "Falha ao baixar arquivos\n",
+                e.getMessage()
+            };
+                        
+            abortBox(msgs);
   
         }
         
