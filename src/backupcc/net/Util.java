@@ -30,7 +30,7 @@ public class Util {
     /**
      * A URL do forum
      */
-    public static final String FORUM_URL = FORUM_PROTOCOL + FORUM_DOMAIN;
+    public static final String FORUM_URL = FORUM_PROTOCOL + FORUM_DOMAIN;   
      
     /*[01]---------------------------------------------------------------------
 
@@ -79,14 +79,21 @@ public class Util {
 
     }//downloadUrl2Pathname()   
     
+    /*[02]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
     public static void downloadUrl2Pathname(
         final String url,
         final String pathname,
         final String name,
-        final int color
+        final int color,
+        final int percentual
     ) throws MalformedURLException, FileNotFoundException, IOException {
         
-        backupcc.tui.Tui.printlnc("Obtendo " + name + " ...", color);
+        backupcc.tui.Tui.printlnc(
+            "Obtendo " + name + " ... (" + percentual + "%)",
+            color
+        );
         downloadUrl2Pathname(url, pathname);
     }
     

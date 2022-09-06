@@ -66,11 +66,11 @@ public final class FetchTopics {
             "Obtendo p\u00E1ginas de t\u00F3picos ...", 
             color
         );
+        
+        int total = topics.size();
          
         ProgressBar pBar = 
-            new ProgressBar(
-                topics.size(), backupcc.tui.ProgressBar.LENGTH, color
-            );
+            new ProgressBar(total, backupcc.tui.ProgressBar.LENGTH, color);
         
         int countTopics = 0;
         
@@ -80,6 +80,8 @@ public final class FetchTopics {
             backupcc.tui.Tui.println(" ");
          
         for (Topic topic: topics) {
+            
+            countTopics++;
             
             int lastPostNumberOnPreviousBackup = 
                 Incremental.lastPostOnPreviousBackup(topic.getId());
@@ -103,7 +105,8 @@ public final class FetchTopics {
                             backupcc.file.Util.RAW_PAGES + '/' + 
                             topic.getFilename(i),
                             topic.getName() + " [" + (i+1) +"]",
-                            color
+                            color,
+                            countTopics * 100 / total
                         );
                     }
                     else {
@@ -120,7 +123,7 @@ public final class FetchTopics {
             
             }//if
             
-            pBar.update(++countTopics);
+            pBar.update(countTopics);
             
         }//for topic
         

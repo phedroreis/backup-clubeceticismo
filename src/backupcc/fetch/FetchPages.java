@@ -27,7 +27,7 @@ public final class FetchPages {
         backupcc.pages.Main main = 
             new backupcc.pages.Main(
                 backupcc.net.Util.FORUM_URL, 
-                backupcc.net.Util.FORUM_DOMAIN + ".html"
+                backupcc.file.Util.INDEX_HTML
             );
                          
         FetchTopics topicsPages = new FetchTopics(main);

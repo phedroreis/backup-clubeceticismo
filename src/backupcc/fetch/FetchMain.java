@@ -62,7 +62,8 @@ public final class FetchMain {
             main.getAbsoluteURL(),
             backupcc.file.Util.RAW_PAGES + '/' + main.getFilename(),
             main.getName(),
-            color
+            color,
+            100
         );
         
     }//download()

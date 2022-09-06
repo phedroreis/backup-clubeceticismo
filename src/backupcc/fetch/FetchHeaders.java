@@ -67,12 +67,17 @@ public final class FetchHeaders {
                       
         headers = mainPage.getHeaders();
         
+        int total = headers.size();
+        
+        int count = 0;
+        
         for (Header header: headers)    
             downloadUrl2Pathname(
                 header.getAbsoluteURL(), 
                 backupcc.file.Util.RAW_PAGES + '/' + header.getFilename(),
                 header.getName(),
-                color
+                color,
+                ++count * 100 / total
             );
         
     }//download()

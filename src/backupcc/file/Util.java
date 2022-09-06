@@ -1,5 +1,6 @@
 package backupcc.file;
 
+import static backupcc.net.Util.FORUM_DOMAIN;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -30,6 +31,11 @@ public final class Util {
      * paginas do forum. Este diretorio soh ira conter arquivos nao editados.
      */
     public static final String RAW_PAGES = INCREMENTAL + "/raw-pages";
+    
+    /**
+     * Nome do arquivo da pagina principal do forum na copia estatica.
+     */
+    public static final String INDEX_HTML = FORUM_DOMAIN + ".html";
     
     /*[01]----------------------------------------------------------------------
     

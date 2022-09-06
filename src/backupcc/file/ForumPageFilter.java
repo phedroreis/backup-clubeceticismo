@@ -1,4 +1,4 @@
-package backupcc.fetch;
+package backupcc.file;
 
 import java.io.File;
 import java.io.FilenameFilter;

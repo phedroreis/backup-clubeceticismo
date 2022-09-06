@@ -1,5 +1,7 @@
 package backupcc.fetch;
 
+import backupcc.file.ForumPageFilter;
+import static backupcc.fetch.FetchPages.specialPrintln;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -20,6 +22,12 @@ public final class FetchFiles {
     
     private static final Pattern CSS_SEARCH =
         Pattern.compile("url\\(['\"](.+?)['\"]");
+    
+    private static int count = 0;
+    
+    private static int total;
+    
+    private static int percentual;
     
     /*[00]----------------------------------------------------------------------
     
@@ -66,7 +74,8 @@ public final class FetchFiles {
                         urlInfo.getAbsoluteUrl(), 
                         localPathname, 
                         localFilename, 
-                        COLOR
+                        COLOR,
+                        percentual
                     );
 
                     if (localFilename.endsWith(".css")) {
@@ -100,9 +109,22 @@ public final class FetchFiles {
         
         backupcc.tui.Tui.println(" ");
         backupcc.tui.Tui.printlnc("Obtendo os arquivos do servidor ...", COLOR);
-        backupcc.tui.Tui.println(" ");
+  
         
+        total = listFiles.length;
+                    
         for (File file: listFiles) {
+            
+            percentual = (++count) * 100 / total;
+            
+            backupcc.tui.Tui.println(" ");           
+            specialPrintln(
+                "Pesquisando ", 
+                file.getName(), 
+                " ... (" + percentual + "%)",
+                COLOR
+            );
+            backupcc.tui.Tui.println(" ");
             
             searchInFile(file, HTML_SEARCH, 2, ""); 
             

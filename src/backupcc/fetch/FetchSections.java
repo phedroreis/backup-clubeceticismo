@@ -69,8 +69,14 @@ public final class FetchSections {
         FetchHeaders headersPages = new FetchHeaders(main);
         
         sections = headersPages.getSections();
+        
+        int total = sections.size();
+        
+        int count = 0;
          
-        for (Section section: sections)
+        for (Section section: sections) {
+            
+            count++;
             
             for (int i = 0; i < section.getNumberOfPages(); i++) {
          
@@ -78,9 +84,12 @@ public final class FetchSections {
                     section.getAbsoluteURL(i), 
                     backupcc.file.Util.RAW_PAGES + '/' + section.getFilename(i),
                     section.getName() + " [" + (i + 1) + "]",
-                    color
+                    color,
+                    count * 100 / total
                 );
             }//for i
+            
+        }//for section
         
     }//download()
     

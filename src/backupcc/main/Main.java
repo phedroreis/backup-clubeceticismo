@@ -22,6 +22,7 @@ public class Main {
     --------------------------------------------------------------------------*/
     public static void main(String[] args) {
         
+        /* Verifica os parametros de linha de comando*/
         if (args.length > 0) {
             switch (args[0]) {
                 case "--forcew":
@@ -45,6 +46,7 @@ public class Main {
             }
         }
         
+        /* Cria os diretorios se ainda nao existirem */
         try {  
             
             mkDirs(backupcc.file.Util.RAW_PAGES);
@@ -60,9 +62,11 @@ public class Main {
             abortBox(msgs);
                            
         }//try-catch
-               
+        
+        /* Inicializa o sistema para um backup incremental */
         Incremental.init();
         
+        /* Baixa paginas e arquivos do servidor */
         try {
             
             downloadPages();
@@ -80,6 +84,7 @@ public class Main {
   
         }
         
+        /* Grava arquivos de finalizacao */
         try {
             
             Incremental.finish();
