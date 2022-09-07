@@ -16,6 +16,30 @@ import java.nio.file.Files;
  * @version 1.0
  */
 public final class Util {
+    
+    private static final String WARN =
+    """
+    <!DOCTYPE html>
+    <html dir="ltr" lang="pt-br">
+    <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="https://clubeceticismo.com.br/favicon.png" />
+     
+    <link rel="canonical" href="warning.html">
+      
+    <link href="./assets/css/font-awesome.min.css?assets_version=26" rel="stylesheet">
+    <link href="./styles/basic_aqua/theme/stylesheet.css?assets_version=26" rel="stylesheet">
+    </head>
+    
+    <body>
+    <h1>Funcionalidade não disponível!</h1>
+    <h2>Você está navegando por uma cópia estática do fórum.</h2>
+    </body>
+    
+    </html>
+    """;
      
     /**
      * O diretorio que irah conter os arquivos e subdiretorios da copia 
@@ -152,5 +176,11 @@ public final class Util {
         writeTextFile(new File(filename), content);
         
     }//writeTextFile()
+    
+    public static void createWarningFile() throws IOException {
+        
+        writeTextFile(FORUM_HOME + '/' + "warning.html", WARN);
+        
+    }
     
 }//classe Util

@@ -1,12 +1,16 @@
 package backupcc.main;
 
+import static backupcc.edit.EditableLink.editFiles;
 import static backupcc.fetch.FetchFiles.fetchFiles;
 import static backupcc.fetch.FetchPages.downloadPages;
+import static backupcc.file.Util.createWarningFile;
 import static backupcc.file.Util.mkDirs;
 import backupcc.incremental.Incremental;
 import backupcc.pages.UnexpectedHtmlFormatException;
 import static backupcc.tui.OptionBox.abortBox;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Ponto de entrada para execucao da aplicacao.
@@ -50,12 +54,13 @@ public class Main {
         try {  
             
             mkDirs(backupcc.file.Util.RAW_PAGES);
+            createWarningFile();
             
         }
         catch (IOException e) {
             
             String[] msgs = {
-                "Imposs\u00EDvel criar diret\u00F3rio:\n",
+                "Imposs\u00EDvel criar diret\u00F3rio ou arquivo:\n",
                 e.getMessage()
             };
                         
@@ -82,6 +87,22 @@ public class Main {
                         
             abortBox(msgs);
   
+        }
+        
+        try {
+            
+            editFiles();
+            
+        } catch (IOException e) {
+            
+            
+            String[] msgs = {
+                "Falha ao gravpar arquivos\n",
+                e.getMessage()
+            };
+                        
+            abortBox(msgs);
+            
         }
         
         /* Grava arquivos de finalizacao */
