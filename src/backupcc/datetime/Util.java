@@ -24,10 +24,12 @@ public class Util {
           LocalDateTime localDateTime = LocalDateTime.now();
   
         DateTimeFormatter formatter = 
-                DateTimeFormatter.ofPattern("dd-MM-yyyy(HH:mm:ss)");
+                DateTimeFormatter.ofPattern("dd-MM-yyyy(HH.mm;ss,)");
         
-        return localDateTime.format(formatter);
+        return 
+            localDateTime.format(formatter).replace('.','h').replace(';','m').
+                replace(',','s');
 
     }//now()
-    
+        
 }//classe Util
