@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * @since 23 de agosto de 2022
  * @version 1.0
  */
-public final class FetchHeaders {
+final class FetchHeaders {
     
     private final backupcc.pages.Main main;
     

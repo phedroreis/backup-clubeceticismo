@@ -12,12 +12,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Classe encarrega de baixar a página principal do forum, localizar (nesta
+ * Classe encarregada de baixar a página principal do forum, localizar (nesta
  * pagina) o endereco das paginas dos headers e disponibilizar estes 
  * enderecos atraves de um objeto TreeSet.
  * 
  * @author "Pedro Reis"
- * @since 23 de agosto de 2022
+ * @since 1.0 (23 de agosto de 2022)
  * @version 1.0
  */
 public final class FetchMain {

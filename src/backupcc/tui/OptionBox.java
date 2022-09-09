@@ -17,7 +17,7 @@ import java.util.Scanner;
  * @since 20 de agosto de 2022
  * @version 1.0
  */
-public class OptionBox {
+public final class OptionBox {
     
     /*
     Caracteres especiais para desenhar a moldura do box
@@ -308,13 +308,11 @@ public class OptionBox {
 
     }//warningBox()
       
-    /*[03]----------------------------------------------------------------------
+    /*[04]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
      * Um OptionBox para aviso de termino do programa.
-     * 
-     * 
      */
     public static void theEndBox() {
         
@@ -333,6 +331,6 @@ public class OptionBox {
         
         if (o.showBox() == 'a') System.exit(0);
 
-    }//warningBox()
+    }//theEndBox()
          
 }//classe OptionBox

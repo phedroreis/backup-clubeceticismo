@@ -16,7 +16,7 @@ import java.util.TreeSet;
  * @since 25 de agosto de 2022
  * @version 1.0
  */
-public final class FetchTopics {
+final class FetchTopics {
     /*
     Objeto com os dados da pagina principal do forum.
     */  
@@ -60,19 +60,25 @@ public final class FetchTopics {
         FetchSections sectionsPages = new FetchSections(main);
         
         topics = sectionsPages.getTopics();
+         
+        int total = topics.size(); 
         
-        backupcc.tui.Tui.println(" ");
+        backupcc.tui.Tui.println(" ");   
         backupcc.tui.Tui.printlnc(
-            "Obtendo p\u00E1ginas de t\u00F3picos ...", 
-            color
+            total + " t\u00F3picos p\u00FAblicos encontrados.", color);
+        backupcc.tui.Tui.println(" "); 
+        backupcc.tui.Tui.printlnc(
+            "Obtendo p\u00E1ginas de t\u00F3picos ...", color
         );
-        
-        int total = topics.size();
          
         ProgressBar pBar = 
             new ProgressBar(total, backupcc.tui.ProgressBar.LENGTH, color);
         
         int countTopics = 0;
+        
+        int updatedTopics = 0;
+        
+        int totalOfNewPosts = 0;
         
         if (!backupcc.incremental.Incremental.isIncremental()) 
             pBar.show();        
@@ -86,7 +92,14 @@ public final class FetchTopics {
             int lastPostNumberOnPreviousBackup = 
                 Incremental.lastPostOnPreviousBackup(topic.getId());
             
-            if (topic.getNumberOfPosts() > lastPostNumberOnPreviousBackup) {
+            int newPostsOnThisTopic = 
+                topic.getNumberOfPosts() - lastPostNumberOnPreviousBackup;
+            
+            if (newPostsOnThisTopic > 0) {
+                
+                updatedTopics++;
+                
+                totalOfNewPosts += newPostsOnThisTopic;
             
                 int firstPageToDownload = Topic.getPageNumberOfThisPost(
                     lastPostNumberOnPreviousBackup + 1
@@ -126,6 +139,27 @@ public final class FetchTopics {
             pBar.update(countTopics);
             
         }//for topic
+        
+        if (backupcc.incremental.Incremental.isIncremental()) {
+            
+            if (updatedTopics > 0) backupcc.tui.Tui.println(" ");
+            
+            String topico = " t\u00F3pico" + ((updatedTopics == 1) ? "" : "s");
+            
+            backupcc.tui.Tui.printlnc(
+                updatedTopics + 
+                topico + " com novas postagens desde o \u00FAltimo backup.",
+                color
+            );
+            
+            String post = " post" + ((totalOfNewPosts == 1) ? "" : "s");
+            
+            backupcc.tui.Tui.printlnc(
+                totalOfNewPosts + post + " desde o \u00FAltimo backup.",
+                color
+            );
+            
+        }//if
         
     }//download()
 

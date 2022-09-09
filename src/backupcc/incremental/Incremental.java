@@ -72,6 +72,8 @@ public final class Incremental {
     Indica se o backup eh incremental ou full.
     */
     private static boolean backupIncremental;
+    
+    private static String lastBackupDatetime = null;
          
     /*[01]----------------------------------------------------------------------
     
@@ -122,8 +124,9 @@ public final class Incremental {
         ) {
             
             String[] msgs = {
-                "Dados do backup anterior n\u00E3o existem ou est\u00E3o" +
-                " corrompidos\n",
+                """
+                Dados do backup anterior n\u00e3o existem ou est\u00e3o corrompidos
+                """,
                 "Se continuar ser\u00E1 iniciado um \"full backup\"\n",
                 "Ou pode abortar e restaurar o backup destes arquivos"
             };
@@ -150,6 +153,8 @@ public final class Incremental {
                 if (separatorPosition == -1) {//data do backup
                     
                     RAW_PAGES_DIR.renameTo(new File(RAW_PAGES + '-' + keyValue));
+                    
+                    lastBackupDatetime = keyValue;
 
                     try {
 
@@ -280,5 +285,23 @@ public final class Incremental {
         return backupIncremental;
         
     }
+    
+    /*[06]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Retorna a data hora do último backup ou se é full.
+     * 
+     * @return tData e hora do último backup.
+     */
+    public static String lastBackupDatetime() {
+        
+        if (lastBackupDatetime == null) return "Full backup.";
+        
+        return 
+            "\u00DAltimo backup realizado em " +
+            backupcc.datetime.Util.dateTime(lastBackupDatetime);
+        
+    }//lastBackupDatetime()
        
 }//classe Incremental

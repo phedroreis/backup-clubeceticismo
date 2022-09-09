@@ -10,18 +10,12 @@ import java.util.regex.Pattern;
  * @since 6 de setembro de 2022
  * @version 1,0
  */
-public final class ViewtopicPhp extends EditableLink {
+final class ViewtopicPhp extends EditableLink {
     
     private static final Pattern VIEWTOPIC_REGEX = 
-     Pattern.compile("href=\".*?(\"|/viewtopic\\.php\\?.*?(t=\\d+).*?\")");
-       /*  "href=\"(" +
-         FORUM_URL_STR + 
-         "|[.])/viewtopic\\.php\\?.*?(t=\\d+).*?\""
-     );*/
-    
-    //"href=\".*?(\"|/viewtopic\\.php\\?.*?(t=\\d+).*?\")"
+        Pattern.compile("href=\"\\S*?(/viewtopic\\.php\\?.*?(t=\\d+).*?\")");
 
-    /*[00]----------------------------------------------------------------------
+    /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     @Override
@@ -29,8 +23,6 @@ public final class ViewtopicPhp extends EditableLink {
         
         String original = matcher.group(1);
         
-        if (original.equals("\"")) return;
-
         String edited = '/' + matcher.group(2);
             
         Matcher start = START_REGEX.matcher(original);
@@ -43,7 +35,7 @@ public final class ViewtopicPhp extends EditableLink {
 
     }//map()
     
-    /*[00]----------------------------------------------------------------------
+    /*[02]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     @Override
@@ -52,5 +44,5 @@ public final class ViewtopicPhp extends EditableLink {
         return VIEWTOPIC_REGEX;
         
     }//getPattern()
-    
+        
 }//ViewtopicPhp()

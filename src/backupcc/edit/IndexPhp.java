@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * @since 6 de setembro de 2022
  * @version 1.0
  */
-public final class IndexPhp extends EditableLink {
+final class IndexPhp extends EditableLink {
     
     private static final Pattern INDEX_REGEX =
     Pattern.compile(

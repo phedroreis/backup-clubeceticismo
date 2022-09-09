@@ -8,7 +8,7 @@ package backupcc.strings;
  * @version 1.0
  * @author "Pedro Reis"
  */
-public class Util {
+public final class Util {
         
     /*[01]----------------------------------------------------------------------
     

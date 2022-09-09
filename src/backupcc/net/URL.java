@@ -12,7 +12,7 @@ import java.net.MalformedURLException;
  * @version 1.0
  * @author "Pedro Reis"
  */
-public class URL {
+public final class URL {
     
     private final java.net.URL absoluteUrl;
   

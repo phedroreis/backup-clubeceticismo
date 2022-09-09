@@ -9,10 +9,10 @@ import static backupcc.strings.Util.repeatChar;
  * @version 1.0
  * @author "Pedro Reis"
  */
-public class ProgressBar {
-    /*
-    Largura padrao da barra de progresso para ser utilizada por todas as 
-    ProgressBar do programa.
+public final class ProgressBar {
+    /**
+    * Largura padrao da barra de progresso para ser utilizada por todas as 
+    * ProgressBar do programa.
     */
     public static final int LENGTH = 50;
     

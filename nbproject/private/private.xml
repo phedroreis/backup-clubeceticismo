@@ -5,18 +5,20 @@
         <group>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/incremental/Incremental.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Section.java</file>
-            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchMain.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchHeaders.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchMain.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchTopics.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/security/Util.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/package-info.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Page.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Topic.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchFiles.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/UnexpectedHtmlFormatException.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Main.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/Tui.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/AnyPhp.java</file>
-            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/strings/Util.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/file/Util.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/strings/Util.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/datetime/Util.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/EditableLink.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/ViewtopicPhp.java</file>
@@ -26,12 +28,12 @@
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/Root.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/ProgressBar.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Header.java</file>
-            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/file/ForumPageFilter.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/main/Main.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/file/ForumPageFilter.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchSections.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/net/URL.java</file>
-            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/net/Util.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/ViewforumPhp.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/net/Util.java</file>
         </group>
     </open-files>
 </project-private>

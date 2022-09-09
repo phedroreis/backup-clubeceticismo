@@ -13,7 +13,7 @@ package backupcc.tui;
  * @version 1.0
  * @author "Pedro Reis"
  */
-public class Tui {
+public final class Tui {
     /*
     Armazena se o SO eh Windows ou Unix like
     */

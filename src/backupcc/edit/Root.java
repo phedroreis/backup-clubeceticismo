@@ -10,23 +10,22 @@ import java.util.regex.Pattern;
  * @since 6 de setembro de 2022
  * @version 1.0
  */
-public final class Root extends EditableLink {
+final class Root extends EditableLink {
     
-    private final static String ROOT_STR = "href=\"" + FORUM_URL_STR + "/";
+    private final static Pattern ROOT_PATTERN = 
+        Pattern.compile("href=\"" + FORUM_URL_STR + "/\\w");
     
-    private final static Pattern ROOT_PATTERN = Pattern.compile(ROOT_STR);
-    
-    /*[00]----------------------------------------------------------------------
+    /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     @Override
     public void map(Matcher matcher, HashMap<String, String> hashMap) {
         
-        hashMap.put(ROOT_STR, "./");
+        hashMap.put(backupcc.net.Util.FORUM_URL + '/', "./");
         
     }//map()
     
-    /*[00]----------------------------------------------------------------------
+    /*[02]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     @Override
@@ -35,5 +34,5 @@ public final class Root extends EditableLink {
         return ROOT_PATTERN;
        
     }//getPattern()   
-    
+        
 }//classe Root

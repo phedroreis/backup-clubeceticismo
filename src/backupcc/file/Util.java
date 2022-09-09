@@ -17,29 +17,44 @@ import java.nio.file.Files;
  */
 public final class Util {
     
-    private static final String WARN =
+    private static final String WARNING_CONTENT =
     """
     <!DOCTYPE html>
     <html dir="ltr" lang="pt-br">
+    
     <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="https://clubeceticismo.com.br/favicon.png" />
-     
-    <link rel="canonical" href="warning.html">
-      
+    <link rel="shortcut icon" href="./favicon.png" />
+          
     <link href="./assets/css/font-awesome.min.css?assets_version=26" rel="stylesheet">
     <link href="./styles/basic_aqua/theme/stylesheet.css?assets_version=26" rel="stylesheet">
+    <style>
+    h1, h2 { text-align: center; margin-top: 8%;  }
+    </style>
     </head>
     
     <body>
+    
+    <header>
+    <a id="logo" class="logo" href="./clubeceticismo.com.br.html" title="Principal">
+    <img src="./styles/basic_aqua/theme/images/logo.png" data-src-hd="./styles/basic_aqua/theme/images/logo_hd.png" alt="Clube Ceticismo"/>
+    </a>
+    </header>
+    
     <h1>Funcionalidade não disponível!</h1>
     <h2>Você está navegando por uma cópia estática do fórum.</h2>
     </body>
     
     </html>
     """;
+    
+    /**
+     * Nome do arquivo com a pagina que deve informar que se trata de uma 
+     * copia estatica do forum.
+     */
+    public static final String WARNING_FILENAME = "warning.html";
      
     /**
      * O diretorio que irah conter os arquivos e subdiretorios da copia 
@@ -177,10 +192,21 @@ public final class Util {
         
     }//writeTextFile()
     
+    /*[06]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Cria o arquivo com a pagina informando se tratar de uma copia estatica do
+     * forum.
+     * 
+     * @throws IOException Em caso de erro de IO.
+     */
     public static void createWarningFile() throws IOException {
         
-        writeTextFile(FORUM_HOME + '/' + "warning.html", WARN);
+        File warningFile = new File(FORUM_HOME + '/' + WARNING_FILENAME);
         
-    }
+        if (!warningFile.exists()) writeTextFile(warningFile, WARNING_CONTENT);
+        
+    }//createWarningFile()
     
 }//classe Util

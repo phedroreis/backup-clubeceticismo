@@ -9,8 +9,6 @@ import backupcc.incremental.Incremental;
 import backupcc.pages.UnexpectedHtmlFormatException;
 import static backupcc.tui.OptionBox.abortBox;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Ponto de entrada para execucao da aplicacao.
@@ -19,7 +17,7 @@ import java.util.logging.Logger;
  * @author "Pedro Reis"
  * @version 1.0
  */
-public class Main {
+public final class Main {
     
     /*[--]----------------------------------------------------------------------
     
@@ -29,24 +27,19 @@ public class Main {
         /* Verifica os parametros de linha de comando*/
         if (args.length > 0) {
             switch (args[0]) {
-                case "--forcew":
-                case "-w":
-                    backupcc.tui.Tui.ansiCodesDisable();
-                    break;
-                case "--forceu":
-                case "-u":
-                    backupcc.tui.Tui.ansiCodesEnable();
-                    break;
-                default:
+                case "--forcew", "-w" -> backupcc.tui.Tui.ansiCodesDisable();
+                case "--forceu", "-u" -> backupcc.tui.Tui.ansiCodesEnable();
+                default -> {
                     backupcc.tui.Tui.printlnc(
-                        args[0] + " <- flag nao reconhecido!",
-                        backupcc.tui.Tui.RED
+                            args[0] + " <- flag nao reconhecido!",
+                            backupcc.tui.Tui.RED
                     );
                     backupcc.tui.Tui.printlnc(
-                        "Uso : [--forcew | -w | --forceu | -u]",
-                        backupcc.tui.Tui.RED
+                            "Uso : [--forcew | -w | --forceu | -u]",
+                            backupcc.tui.Tui.RED
                     ); 
                     System.exit(0);
+                }
             }
         }
         
@@ -70,6 +63,11 @@ public class Main {
         
         /* Inicializa o sistema para um backup incremental */
         Incremental.init();
+        
+        backupcc.tui.Tui.println(
+            backupcc.incremental.Incremental.lastBackupDatetime()
+        );
+        backupcc.tui.Tui.println(" ");
         
         /* Baixa paginas e arquivos do servidor */
         try {

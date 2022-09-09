@@ -10,17 +10,12 @@ import java.util.regex.Pattern;
  * @since 6 de setembro de 2022
  * @version 1.0
  */
-public final class ViewforumPhp extends EditableLink {
+final class ViewforumPhp extends EditableLink {
     
     private static final Pattern VIEWFORUM_REGEX =
-        Pattern.compile("href=\".*?(\"|/viewforum\\.php\\?.*?(f=\\d+).*?\")");
-      /*  Pattern.compile(
-            "href=\"(" +
-            FORUM_URL_STR + 
-            "|[.])/viewforum\\.php\\?.*?(f=\\d+).*?\""    
-        );*/
+        Pattern.compile("href=\"\\S*?(/viewforum\\.php\\?.*?(f=\\d+).*?\")");
     
-    /*[00]----------------------------------------------------------------------
+    /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     @Override
@@ -28,8 +23,6 @@ public final class ViewforumPhp extends EditableLink {
         
         String original = matcher.group(1);
         
-        if (original.equals("\"")) return;
-
         String edited = '/' + matcher.group(2);
 
         Matcher start = START_REGEX.matcher(original);
@@ -42,7 +35,7 @@ public final class ViewforumPhp extends EditableLink {
 
     }//map()
     
-    /*[00]----------------------------------------------------------------------
+    /*[02]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     @Override

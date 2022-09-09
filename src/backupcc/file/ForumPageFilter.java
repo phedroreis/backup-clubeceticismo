@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * @since 3 de setembro de 2022
  * @version 1.0
  */
-public class ForumPageFilter implements FilenameFilter {
+public final class ForumPageFilter implements FilenameFilter {
     
     private static final String MAIN_PAGE = 
         backupcc.net.Util.FORUM_DOMAIN.replace(".", "\\.");

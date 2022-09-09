@@ -15,7 +15,7 @@ import java.nio.channels.ReadableByteChannel;
  * @since 21 de agosto de 2022
  * @version 1.0
  */
-public class Util {
+public final class Util {
      
     /**
      * O protocolo utilizado na conexao com o servidor do forum.

@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * @since 25 de agosto de 2022
  * @version 1.0
  */
-public final class FetchSections {
+final class FetchSections {
     /*
     Objeto com os dados da pagina principal do forum.
     */  

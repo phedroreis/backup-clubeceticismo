@@ -1,7 +1,6 @@
 package backupcc.fetch;
 
 import backupcc.file.ForumPageFilter;
-import static backupcc.fetch.FetchPages.specialPrintln;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -44,7 +43,9 @@ public final class FetchFiles {
         String contentFile = backupcc.file.Util.readTextFile(file);
 
         Matcher matcher = pattern.matcher(contentFile);
-
+        
+        boolean flag = true;
+        
         while (matcher.find()) {
 
             String url =  matcher.group(group);
@@ -69,7 +70,15 @@ public final class FetchFiles {
                 if (!f.exists()) {
 
                     backupcc.file.Util.mkDirs(localPath);
-
+                    
+                    if (flag) {
+                        
+                        backupcc.tui.Tui.println(" ");
+                        backupcc.tui.Tui.println(" ");
+                        flag = false;
+                        
+                    }
+                    
                     backupcc.net.Util.downloadUrl2Pathname(
                         urlInfo.getAbsoluteUrl(), 
                         localPathname, 
@@ -109,22 +118,22 @@ public final class FetchFiles {
         
         backupcc.tui.Tui.println(" ");
         backupcc.tui.Tui.printlnc("Obtendo os arquivos do servidor ...", COLOR);
-  
+          
+        total = listFiles.length; int countFiles = 0;
         
-        total = listFiles.length;
-                    
+        int barLength = (total <= backupcc.tui.ProgressBar.LENGTH) ? 
+            total : backupcc.tui.ProgressBar.LENGTH;
+        
+        backupcc.tui.ProgressBar bar = 
+            new backupcc.tui.ProgressBar(total, barLength, COLOR);
+        
+        bar.show();
+                       
         for (File file: listFiles) {
             
             percentual = (++count) * 100 / total;
             
-            backupcc.tui.Tui.println(" ");           
-            specialPrintln(
-                "Pesquisando ", 
-                file.getName(), 
-                " ... (" + percentual + "%)",
-                COLOR
-            );
-            backupcc.tui.Tui.println(" ");
+            bar.update(++countFiles);
             
             searchInFile(file, HTML_SEARCH, 2, ""); 
             
@@ -132,12 +141,5 @@ public final class FetchFiles {
         
     }//fetch()
     
-    /*[00]----------------------------------------------------------------------
-    
-    --------------------------------------------------------------------------*/
-    public static void main(String[] args) throws IOException {
-
-        fetchFiles();
-    }
     
 }//classe FetchFiles
