@@ -24,25 +24,9 @@ public final class Main {
     --------------------------------------------------------------------------*/
     public static void main(String[] args) {
         
-        /* Verifica os parametros de linha de comando*/
-        if (args.length > 0) {
-            switch (args[0]) {
-                case "--forcew", "-w" -> backupcc.tui.Tui.ansiCodesDisable();
-                case "--forceu", "-u" -> backupcc.tui.Tui.ansiCodesEnable();
-                default -> {
-                    backupcc.tui.Tui.printlnc(
-                            args[0] + " <- flag nao reconhecido!",
-                            backupcc.tui.Tui.RED
-                    );
-                    backupcc.tui.Tui.printlnc(
-                            "Uso : [--forcew | -w | --forceu | -u]",
-                            backupcc.tui.Tui.RED
-                    ); 
-                    System.exit(0);
-                }
-            }
-        }
-        
+        /* Processa os parametros de linha de comando*/
+        backupcc.command.CommandLine.parseCommandLine(args);
+                  
         /* Cria os diretorios se ainda nao existirem */
         try {  
             

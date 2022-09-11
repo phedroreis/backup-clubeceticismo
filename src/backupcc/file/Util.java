@@ -1,6 +1,5 @@
 package backupcc.file;
 
-import static backupcc.net.Util.FORUM_DOMAIN;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -61,7 +60,8 @@ public final class Util {
      * estatica. Bem como arquivos de dados e log, e outros necessarios para a
      * construcao da copia estatica.
      */
-    public static final String FORUM_HOME = "./clubeceticismo.com.br"; 
+    public static final String FORUM_HOME = 
+        "./" + backupcc.net.Util.FORUM_DOMAIN; 
     
     public static final String INCREMENTAL = FORUM_HOME + "/incremental";
     
@@ -74,7 +74,8 @@ public final class Util {
     /**
      * Nome do arquivo da pagina principal do forum na copia estatica.
      */
-    public static final String INDEX_HTML = FORUM_DOMAIN + ".html";
+    public static final String INDEX_HTML = 
+        backupcc.net.Util.FORUM_DOMAIN + ".html";
     
     /*[01]----------------------------------------------------------------------
     

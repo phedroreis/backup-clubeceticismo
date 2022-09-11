@@ -13,6 +13,7 @@
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Page.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Topic.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchFiles.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/command/CommandLine.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/UnexpectedHtmlFormatException.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Main.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/Tui.java</file>
@@ -25,11 +26,13 @@
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/OptionBox.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/IndexPhp.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchPages.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/PageFilter.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/Root.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/ProgressBar.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Header.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/main/Main.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/file/ForumPageFilter.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/ViewtopicPhpPost.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchSections.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/net/URL.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/ViewforumPhp.java</file>

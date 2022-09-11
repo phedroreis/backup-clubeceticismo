@@ -238,8 +238,10 @@ public abstract class EditableLink {
         
         bar.show();
         
+        PageFilter pageFilter = new PageFilter();
+        
         for (File file: listFiles) {
-               
+              
             String contentFile = backupcc.file.Util.readTextFile(file);
             
             /*
@@ -256,11 +258,14 @@ public abstract class EditableLink {
             */
             contentFile = editFile(contentFile, new IndexPhp());
             
+            if (pageFilter.accept(null, file.getName()))
+                contentFile = editFile(contentFile, new ViewtopicPhpPost());
+            
             /*
             Edita links que apontam para o script viewtopic.php
             */
             contentFile = editFile(contentFile, new ViewtopicPhp());
-            
+             
             /*
             Edita links que apontam para o script viewforum.php
             */
