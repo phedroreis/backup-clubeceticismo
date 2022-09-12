@@ -42,25 +42,27 @@ public final class CommandLine {
         switch (getPostLinkParseLevel()) {
             case 0 ->  {
                 backupcc.tui.Tui.println(
-                    "Links para posts nao serao convertidos para versao estatica"
+                    "Links para posts n\u00E3o ser\u00E3o convertidos " +
+                    "para vers\u00E3o est\u00E1tica"
                 );
             }
             case 1 ->  {
                 backupcc.tui.Tui.println(
-                    "Links para posts da pagina inicial serao convertidos " +
-                    "para versao estatica"
+                    "Links para posts da p\u00E1gina inicial ser\u00E3o " +
+                    "convertidos para vers\u00E3o est\u00E1tica"
                 );
             }
             case 2 ->  {
                 backupcc.tui.Tui.println(
-                    "Links para posts da pagina inicial e das paginas de " +
-                    "secao serao convertidos para versao estatica"
+                    "Links para posts da p\u00E1gina inicial e das " +
+                    "p\u00E1ginas de se\u00E7\u00E3o ser\u00E3o convertidos" +
+                    " para vers\u00E3o est\u00E1tica"
                 );
             }
             case 3 ->  {
                 backupcc.tui.Tui.println(
-                    "Todos os links para posts nao serao convertidos para" +
-                    " versao estatica"
+                    "Todos os links para posts ser\u00E3 convertidos para" +
+                    " vers\u00E3o est\u00E1tica"
                 );
                 backupcc.tui.Tui.println(
                     "AVISO: isto pode tornar o backup extremamente lento!"

@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 final class ViewtopicPhpPost extends EditableLink {
     
     private static final Pattern VIEWTOPIC_REGEX = 
-        Pattern.compile("href=\"\\S*?(/viewtopic\\.php\\?\\S*?[#]p(\\d+))\"");
+        Pattern.compile("href=\"\\S*?(/viewtopic\\.php\\?\\S*?#p(\\d+))\"");
     
     private static final Pattern CANNONICAL_URL = 
         Pattern.compile("\\s*?<link rel=\"canonical\".+?t=(\\d+).*?\">\\s*");
@@ -64,23 +64,24 @@ final class ViewtopicPhpPost extends EditableLink {
                 )
         ) {
 
-            String line; Matcher cannonicalMatcher;
-            
-            StringBuilder sb = new StringBuilder(256);
-
+            String line; 
+     
             while ((line = br.readLine()) != null) {
                 
-                cannonicalMatcher = CANNONICAL_URL.matcher(line);
+                Matcher cannonicalMatcher = CANNONICAL_URL.matcher(line);
 
                 if (cannonicalMatcher.find()) {
                     
+                    StringBuilder sb = new StringBuilder(256);
+                    
+                    sb.append("/t=").append(cannonicalMatcher.group(1));
+                    
                     Matcher startMatcher = START_REGEX.matcher(line);
                     
-                    String start = 
-                        startMatcher.find() ? ('&' + startMatcher.group()) : "";
+                    if (startMatcher.find()) 
+                        sb.append('&').append(startMatcher.group());
                     
-                    sb.append("/t=").append(cannonicalMatcher.group(1)).
-                        append(start).append(".html#p").append(post);
+                    sb.append(".html#p").append(post);
                     
                     return sb.toString();
                 }

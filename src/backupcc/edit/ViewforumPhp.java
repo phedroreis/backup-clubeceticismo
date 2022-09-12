@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 final class ViewforumPhp extends EditableLink {
     
     private static final Pattern VIEWFORUM_REGEX =
-        Pattern.compile("href=\"\\S*?(/viewforum\\.php\\?.*?(f=\\d+).*?)\"");
+        Pattern.compile("href=\"\\S*?(/viewforum\\.php\\?.*?(f=\\d+).*?\")");
     
     /*[01]----------------------------------------------------------------------
     
@@ -29,7 +29,7 @@ final class ViewforumPhp extends EditableLink {
 
         if (start.find()) edited += '&' + start.group();
 
-        edited += ".html"; 
+        edited += ".html\""; 
 
         hashMap.put(original, edited);
 

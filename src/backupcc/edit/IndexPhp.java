@@ -20,7 +20,7 @@ final class IndexPhp extends EditableLink {
     );
     
     private static final String INDEX_LINK = 
-        "href=\"./" + backupcc.file.Util.INDEX_HTML + "\"";
+        "./" + backupcc.file.Util.INDEX_HTML + "\"";
     
     /*[01]----------------------------------------------------------------------
     
@@ -28,7 +28,7 @@ final class IndexPhp extends EditableLink {
     @Override
     public void map(Matcher matcher, HashMap<String, String> hashMap) {
                         
-        hashMap.put(matcher.group(), INDEX_LINK);
+        hashMap.put(matcher.group(1), INDEX_LINK);
 
     }//map()
     

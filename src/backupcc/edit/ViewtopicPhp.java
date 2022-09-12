@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 final class ViewtopicPhp extends EditableLink {
     
     private static final Pattern VIEWTOPIC_REGEX = 
-        Pattern.compile("href=\"\\S*?(/viewtopic\\.php\\?.*?(t=\\d+).*?)\"");
+        Pattern.compile("href=\"\\S*?(/viewtopic\\.php\\?.*?(t=\\d+).*?\")");
 
     /*[01]----------------------------------------------------------------------
     
@@ -29,8 +29,8 @@ final class ViewtopicPhp extends EditableLink {
 
         if (start.find()) edited += '&' + start.group();
 
-        edited += ".html"; 
-
+        edited += ".html\""; 
+        
         hashMap.put(original, edited);
 
     }//map()

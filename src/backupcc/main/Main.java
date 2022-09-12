@@ -79,7 +79,7 @@ public final class Main {
             
             
             String[] msgs = {
-                "Falha ao gravpar arquivos\n",
+                "Falha ao gravar arquivos\n",
                 e.getMessage()
             };
                         

@@ -24,10 +24,10 @@ import java.util.regex.Pattern;
 final class AnyPhp extends EditableLink {
     
     private static final Pattern PHP = 
-        Pattern.compile("href=\"\\S*?\\.php.*?\"");
+        Pattern.compile("href=\"(\\S*?\\.php.*?\")");
     
-    private static final String EDITED =
-        "href=\"" + backupcc.file.Util.WARNING_FILENAME + "\"";
+    private static final String EDITED = 
+        backupcc.file.Util.WARNING_FILENAME + '"';
     
     /*[00]----------------------------------------------------------------------
     
@@ -60,7 +60,7 @@ final class AnyPhp extends EditableLink {
         era provida por esse script no forum real nao esta disponivel na copia
         estatica.
         */
-        hashMap.put(matcher.group(), EDITED);
+        hashMap.put(matcher.group(1), EDITED);
     
     }//map()
     
@@ -80,12 +80,5 @@ final class AnyPhp extends EditableLink {
         return PHP;
     
     }//getPattern()
-    
-    public static void main(String[] args) {
-        Matcher m = 
-            PHP.matcher("href=\"clube/file.php?kkjfkfjlajf\" href=\"file.php\"");
-        if (m.find())
-        System.out.println(m.group());
-    }
-    
+        
 }//classe AnyPhp
