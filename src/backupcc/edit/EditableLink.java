@@ -251,8 +251,6 @@ public abstract class EditableLink {
         
         for (File file: listFiles) {
               
-            //String contentFile = backupcc.file.Util.readTextFile(file);
-            
             StringEditor contentFile = 
                 new StringEditor(backupcc.file.Util.readTextFile(file));
             
@@ -302,7 +300,5 @@ public abstract class EditableLink {
         }//for file
         
     }//editFiles()
-    
- 
-        
+             
 }//classe EditableLink
