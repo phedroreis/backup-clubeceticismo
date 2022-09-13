@@ -7,9 +7,21 @@ package backupcc.command;
  * @version 1.0
  */
 public final class CommandLine {
-    
+    /**
+     * <p>Por default, a aplicação só edita os links para posts na página 
+     * principal.</p>
+     */
     private static String postLinkParseLevel = "-n1";
     
+    /*[01]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * <p>Faz o parse dos argumentos passados na linha de comando para a 
+     * aplicação.</p>
+     * 
+     * @param commands Linha de comando digitada ao executar o programa.
+     */
     public static void parseCommandLine(final String[] commands) {
         
         for (String command: commands) {
@@ -72,6 +84,25 @@ public final class CommandLine {
         
     }//parseCommandLine()
     
+    /*[02]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * <p> Há 4 modos de editar links para posts: </p>
+     * 
+     * <dl>
+     * <dt>Nível 0</dt>
+     * <dd>Não edita nenhum link para post</dd>
+     * <dt>Nível 1</dt>
+     * <dd>Edita apenas na página principal do fórum.</dd>
+     * <dt>Nível 2</dt>
+     * <dd>Edita na pág. principal e nas de headers e seções</dd>
+     * <dt>Nível 3</dt>
+     * <dd>Edita todos os links para post em todas as páginas</dd>
+     * </dl>
+     * 
+     * @return O nível usado para editar links para posts.
+     */
     public static int getPostLinkParseLevel() {
         
         return (postLinkParseLevel.charAt(2) - 48);

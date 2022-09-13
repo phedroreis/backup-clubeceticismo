@@ -11,14 +11,14 @@ import java.io.FilenameFilter;
  * @since 10 de setembro de 2022
  * @version 1.0
  */
-final class PageFilter implements FilenameFilter {
+final class FilesWithPostLinksToBeEditedFilter implements FilenameFilter {
     
     private final int postLinkParseLevel;
     
     /*[00]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
-    public PageFilter() {
+    public FilesWithPostLinksToBeEditedFilter() {
         
         postLinkParseLevel = 
             backupcc.command.CommandLine.getPostLinkParseLevel();
@@ -51,5 +51,5 @@ final class PageFilter implements FilenameFilter {
            
     }//accept()
            
-}//classe PageFilter
+}//classe FilesWithPostLinksToBeEditedFilter
 

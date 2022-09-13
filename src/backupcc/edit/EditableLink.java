@@ -1,5 +1,6 @@
 package backupcc.edit;
 
+import backupcc.strings.StringEditor;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ import java.util.regex.Pattern;
  * inserir este mapeamento como um par key/value no objeto {@link backupcc.edit.EditableLink#hashMap }.</p>
  * 
  * <p>Desta forma o pacote implementa 5 classes que estendem EditableLink, cada uma
- * responsável editar um tipo de link nos arquivos HTML que foram baixados.</p>
+ * responsável por editar um tipo de link nos arquivos HTML que foram baixados.</p>
  * 
  * <dl>
  * <dt>{@link backupcc.edit.Root }</dt>
@@ -62,30 +63,40 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 public abstract class EditableLink {
+    
     /**
      * <p>A URL do fórum escrita na forma: https:\\clubeceticismo[.]com[.]br.</p>
+     * 
      * <p>Dessa forma esta string pode ser usada como parte de uma regex sem que
      * o caractere ponto seja interpretado como curinga</p>
      */
     protected static final String FORUM_URL_STR = 
         backupcc.net.Util.FORUM_URL.replace(".", "[.]"); 
+    
     /**
      * <p>A regex que localiza a parte do query que indica o índice de uma 
      * página ao script php</p>
      */    
     protected static final Pattern START_REGEX =
         Pattern.compile("start=\\d+");
+    
     /**
      * <p>Mapeia strings que serão substituídas nos HTMLs originais (os keys neste
      * HashMap) para as strings que as substituirão (as values no HashMap).</p>
+     * 
      * <p>Numa primeira etapa o método {@link #editFile(java.lang.String, backupcc.edit.EditableLink) editFile}
      * pesquisa todas as strings que serão substituídas e insere neste HashMap
      * associando-a à string que fará a substituição.</p>
+     * 
      * <p>No loop seguinte, este HashMap é percorrido e as substituições vão 
      * sendo aplicadas.</p>
      */
     private static HashMap<String, String> hashMap;
     
+    /**
+     * Em terminais tipo Unix as saídas de texto produzias por métodos desta 
+     * classe serão na cor COLOR.
+     */
     private static final int COLOR = backupcc.tui.Tui.BLUE;
     
     /*[01]----------------------------------------------------------------------
@@ -108,6 +119,7 @@ public abstract class EditableLink {
      * 
      * @param matcher Deve ser enviado logo após o método find() ter retornado
      * true.
+     * 
      * @param hashMap O hashMap no qual o método {@link #editFile(java.lang.String, backupcc.edit.EditableLink) editFile}
      * estará inserindo as strngs a serem substituídas com suas respectivas 
      * strings de substituição.
@@ -161,8 +173,8 @@ public abstract class EditableLink {
      * 
      * @return A string contentFile editada.
      */
-    private static String editFile(
-        String contentFile,
+    private static void editFile(
+        StringEditor contentFile,
         final EditableLink link
     ) {
         /*
@@ -175,19 +187,15 @@ public abstract class EditableLink {
         Obtém a regex que será utilizada para localizar os padrões a serem
         substituídos.
         */
-        Matcher matcher = link.getPattern().matcher(contentFile);
+        Matcher matcher = link.getPattern().matcher(contentFile.toString());
         
         /*
         Para cada String localizada em contentFile, o objeto link se encarrega
         de gerar a String adequada para substitui-la e esta associação é 
         inserida como um par key\value em hashMap
         */
-        while (matcher.find()) {
-            
-            link.map(matcher, hashMap);
-            
-        }//while
-        
+        while (matcher.find()) link.map(matcher, hashMap);
+                    
         Set<String> keySet = hashMap.keySet();
         
         /*
@@ -198,11 +206,11 @@ public abstract class EditableLink {
 
             String editedUrl = hashMap.get(originalUrl);
 
-            contentFile = contentFile.replace(originalUrl, editedUrl);
+            contentFile.replace(originalUrl, editedUrl);
 
         }//for originalUrl
         
-        return contentFile;//retorna contentFile depois de editada
+        //return contentFile;//retorna contentFile depois de editada
         
     }//editFile()    
     
@@ -238,38 +246,42 @@ public abstract class EditableLink {
         
         bar.show();
         
-        PageFilter pageFilter = new PageFilter();
+        FilesWithPostLinksToBeEditedFilter pageFilter = 
+            new FilesWithPostLinksToBeEditedFilter();
         
         for (File file: listFiles) {
               
-            String contentFile = backupcc.file.Util.readTextFile(file);
+            //String contentFile = backupcc.file.Util.readTextFile(file);
+            
+            StringEditor contentFile = 
+                new StringEditor(backupcc.file.Util.readTextFile(file));
             
             /*
             Edita links cujo nome de domínio seja o do servidor do fórum,
             fazendo-os apontar para o diretório local onde está instalada a 
             cópia estática.
             */
-            contentFile = editFile(contentFile, new Root());
+            editFile(contentFile, new Root());
             
             /*
             Edita todos os links que apontam para a página incial do fórum,
             fazendo-os apontar para o arquivo estático com a cópia dessa página
             baixada no último backup incremental.
             */
-            contentFile = editFile(contentFile, new IndexPhp());
+            editFile(contentFile, new IndexPhp());
             
             if (pageFilter.accept(null, file.getName()))
-                contentFile = editFile(contentFile, new ViewtopicPhpPost());
+                editFile(contentFile, new ViewtopicPhpPost());
             
             /*
             Edita links que apontam para o script viewtopic.php
             */
-            contentFile = editFile(contentFile, new ViewtopicPhp());
+            editFile(contentFile, new ViewtopicPhp());
              
             /*
             Edita links que apontam para o script viewforum.php
             */
-            contentFile = editFile(contentFile, new ViewforumPhp());
+            editFile(contentFile, new ViewforumPhp());
             
             /*
             Todos os links para scripts php que restaram após as edições 
@@ -278,17 +290,19 @@ public abstract class EditableLink {
             serão editados para uma página que informa que a navegação está se
             dando nesta tal cópia estática.
             */
-            contentFile = editFile(contentFile, new AnyPhp());
+            editFile(contentFile, new AnyPhp());
               
             File editedFile = 
                 new File(backupcc.file.Util.FORUM_HOME + '/' + file.getName());
             
-            backupcc.file.Util.writeTextFile(editedFile, contentFile);
+            backupcc.file.Util.writeTextFile(editedFile, contentFile.toString());
             
             bar.update(++countFiles);
             
         }//for file
         
     }//editFiles()
+    
+ 
         
 }//classe EditableLink
