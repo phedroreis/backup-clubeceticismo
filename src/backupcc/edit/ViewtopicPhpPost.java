@@ -54,7 +54,14 @@ final class ViewtopicPhpPost extends EditableLink {
         final String theUrl,
         final String post
     ) throws IOException {
-
+        
+        String filename =
+            backupcc.incremental.Incremental.getFilenameOnMap(
+                Integer.valueOf(post)
+            );
+        
+        if (filename != null) return filename;
+    
         URL url = new URL(theUrl);
         
         try (
@@ -80,12 +87,30 @@ final class ViewtopicPhpPost extends EditableLink {
                     
                     if (startMatcher.find()) 
                         sb.append('&').append(startMatcher.group());
-                    
+                                        
                     sb.append(".html#p").append(post);
                     
-                    return sb.toString();
-                }
-            }
+                    filename = sb.toString();
+                    
+                    if (
+                        backupcc.incremental.Incremental.putFilenameOnMap(
+                            filename
+                        )
+                    )                  
+                        backupcc.incremental.Incremental.putFilenameOnList(
+                            filename
+                        );
+                    else
+                        throw new IllegalArgumentException(
+                            "PostId readed from server was already in map: " +
+                             post
+                        );
+                    
+                    return filename;
+                    
+                }//if
+                
+            }//while line
 
         }//try
         

@@ -4,10 +4,16 @@ import static backupcc.file.Util.RAW_PAGES;
 import static backupcc.file.Util.mkDirs;
 import static backupcc.tui.OptionBox.abortBox;
 import static backupcc.tui.OptionBox.warningBox;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -30,6 +36,11 @@ public final class Incremental {
     private static final String DELIMITER = ",";
     
     private static final char SEPARATOR = ' ';
+    /**
+     * O nome do arquivo com a lista de todos os posts com os respectivos
+     * arquivos ao qual pertencem.
+     */
+    private static final String ALLPOSTS_LIST_PATHNAME = "all-posts.dat";
    
     /*
     Nome do arquivo com a lista de numero de posts por topico.
@@ -74,6 +85,10 @@ public final class Incremental {
     private static boolean backupIncremental;
     
     private static String lastBackupDatetime = null;
+    
+    private static final HashMap<Integer, int[]> POST_MAP = new HashMap<>();
+    
+    private static final List<String> POST_LIST = new LinkedList<>();
          
     /*[01]----------------------------------------------------------------------
     
@@ -86,6 +101,32 @@ public final class Incremental {
      * 
      */
     public static void init() {
+        
+        try {
+            
+            String allPosts =
+                backupcc.file.Util.readTextFile(ALLPOSTS_LIST_PATHNAME);
+            
+            Scanner scanner = new Scanner(allPosts);
+            
+            while (scanner.hasNext()) {
+                
+               putFilenameOnMap(scanner.next());
+               
+            }
+            
+        }
+        catch (IOException e) {
+            
+            String[] msgs = {
+                e.toString() + "\n",
+                "Erro ao ler o arquivo " + ALLPOSTS_LIST_PATHNAME + "\n",
+                "O backup ainda pode prosseguir, mas o processo ser\u00E1 lento"
+            };
+                    
+            backupcc.tui.OptionBox.warningBox(msgs);
+            
+        }//try-catch
         
         String tryToGetPreviousPostsList = null;
         String sha256File = null;
@@ -252,6 +293,28 @@ public final class Incremental {
     
     --------------------------------------------------------------------------*/
     /**
+     * Acrescenta no arquivo com a lista de todos os posts (relacionados com o
+     * arquivo em que estão publicados), os novos posts encontrados em um backup
+     * full ou incremental.
+     */
+    private static void saveNewPostsList() throws IOException {
+        
+   
+        try (    
+                
+            FileWriter writer = new FileWriter(ALLPOSTS_LIST_PATHNAME, true);
+            BufferedWriter buffer = new BufferedWriter(writer);
+        ) {
+    
+            for (String filename : POST_LIST) buffer.write(filename + '\n');
+        }
+   
+    }//saveNewPostsList()
+    
+    /*[05]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
      * Grava em disco a lista com o numero de posts em cada topico obtida no
      * backup corrente.
      * 
@@ -263,6 +326,8 @@ public final class Incremental {
         
         String postList = updatedLastPostsList.toString();
         
+        saveNewPostsList();
+        
         backupcc.file.Util.writeTextFile(POST_LIST_PATHNAME, postList);
          
         backupcc.file.Util.writeTextFile(
@@ -272,7 +337,7 @@ public final class Incremental {
          
     }//finish()  
     
-    /*[05]----------------------------------------------------------------------
+    /*[06]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
@@ -284,9 +349,9 @@ public final class Incremental {
         
         return backupIncremental;
         
-    }
+    }//isIncremental()
     
-    /*[06]----------------------------------------------------------------------
+    /*[07]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
@@ -303,5 +368,81 @@ public final class Incremental {
             backupcc.datetime.Util.dateTime(lastBackupDatetime);
         
     }//lastBackupDatetime()
-       
+    
+    private static final Pattern POST_MAP_PATTERN = 
+        Pattern.compile("/t=(\\d+)(&start=(\\d+))?\\.html#p(\\d+)");
+    
+    /*[08]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * 
+     * @param filename
+     * @return 
+     */
+    public static boolean putFilenameOnMap(final String filename) {
+        
+        int postId;
+        
+        int[] topicStart = new int[2]; 
+        
+        Matcher matcher = POST_MAP_PATTERN.matcher(filename);
+        
+        if (matcher.find()) {
+            
+            postId = Integer.valueOf(matcher.group(4));
+            topicStart[0] = Integer.valueOf(matcher.group(1));
+            if (matcher.group(3) == null)
+                topicStart[1] = 0;
+            else
+                topicStart[1] = Integer.valueOf(matcher.group(3));
+            
+        }
+        else 
+            throw new IllegalArgumentException(
+                "Filename doesn't matches: " + filename
+            );
+        
+        return (POST_MAP.put(postId, topicStart) == null);
+        
+    }//putFilenameOnMap()
+    
+    /*[09]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * 
+     * @param postId
+     * @return 
+     */
+    public static String getFilenameOnMap(final int postId) {
+        
+        int[] topicStart = POST_MAP.get(postId);
+        
+        if (topicStart == null) return null;
+        
+        String start = (topicStart[1] == 0) ? "" : ("&start=" + topicStart[1]);
+        
+        return "/t=" + topicStart[0] + start + ".html#p" + postId;
+        
+    }//getFilenameOnMap()
+    
+    /*[10]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Insere o nome de arquivo, juntamente com a referência para um post, na 
+     * lista que cataloga novas referências para post encontradas no último 
+     * backup incremental.
+     * 
+     * @param filename O nome do arquivo com uma referência para um post neste
+     * arquivo.
+     */
+    public static void putFilenameOnList(final String filename) {
+        
+        POST_LIST.add(filename);
+        
+    }//putFilenameOnList()
+    
+      
 }//classe Incremental

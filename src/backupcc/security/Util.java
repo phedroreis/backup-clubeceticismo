@@ -16,8 +16,10 @@ public final class Util {
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
-    /*
-    Obtem e retorna o hash sha256 de uma string.
+    /**
+     * Obtem e retorna o hash sha256 de uma string.
+     * @param data
+     * @return 
     */
     public static String sha256(final String data) {
            

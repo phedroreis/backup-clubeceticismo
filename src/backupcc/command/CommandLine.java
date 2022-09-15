@@ -11,7 +11,7 @@ public final class CommandLine {
      * <p>Por default, a aplicação só edita os links para posts na página 
      * principal.</p>
      */
-    private static String postLinkParseLevel = "-n1";
+    private static String postLinkParseLevel = "-n2";
     
     /*[01]----------------------------------------------------------------------
     
