@@ -5,8 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * <p>O objetivo desta classe eh construir o link que deve substituir qualquer link
- * ,nos HTMLs baixados do forum, que aponte para algum script php.</p>
+ * <p>O objetivo desta classe eh construir o link que deve substituir qualquer 
+ * link ,nos HTMLs baixados do forum, que aponte para algum script php.</p>
  * 
  * <p>Exceto os scripts viewforum.php, viewtopic.php e file.php. Portanto quando 
  * os metodos desta classe forem executados, os metodos (codificados em outras 

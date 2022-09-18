@@ -7,10 +7,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Classe encarregada de baixar os arquivos estáticos hospedados no servidor
+ * do fórum.
+ * 
  * @author "Pedro Reis"
- * @since 3 de setembro 2022
- * @version 1.0
+ * @since 1.0 (3 de setembro 2022)
+ * @version 1.1
  */
 public final class FetchFiles {
     
@@ -22,13 +24,9 @@ public final class FetchFiles {
     private static final Pattern CSS_SEARCH =
         Pattern.compile("url\\(['\"](.+?)['\"]");
     
-    private static int count = 0;
-    
     private static int total;
-    
-    private static int percentual;
-    
-    /*[00]----------------------------------------------------------------------
+       
+    /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     private static void searchInFile(
@@ -36,11 +34,29 @@ public final class FetchFiles {
         final Pattern pattern,
         final int group,
         final String serverPath
-    ) throws IOException {
+    ) throws backupcc.exception.IOExceptionX {
         
-        String forumUrlPrefix = backupcc.net.Util.FORUM_URL + '/'; 
-
-        String contentFile = backupcc.file.Util.readTextFile(file);
+        String forumUrlPrefix = backupcc.net.Util.FORUM_URL + '/';
+        
+        String contentFile;
+        
+        try {
+            
+            contentFile = backupcc.file.Util.readTextFile(file);
+            
+        }
+        catch (IOException e) {
+            
+            String[] msgs = {
+                e.getMessage() + "\n",
+                "Falha ao ler arquivo: " + file.getName(),
+            };
+            
+            throw new backupcc.exception.IOExceptionX(
+                msgs, backupcc.exception.IOExceptionX.ABORT
+            );     
+            
+        }//try-catch
 
         Matcher matcher = pattern.matcher(contentFile);
         
@@ -68,8 +84,27 @@ public final class FetchFiles {
                 File f = new File(localPathname);
 
                 if (!f.exists()) {
+                    
+                    
+                    try {
 
-                    backupcc.file.Util.mkDirs(localPath);
+                        backupcc.file.Util.mkDirs(localPath);
+
+                    }
+                    catch (IOException e) {
+
+                        String[] msgs = {
+                            e.getMessage() + "\n",
+                            "Falha ao criar diret\u00F3rio: " + localPath
+                        };
+
+                        throw new backupcc.exception.IOExceptionX(
+                            msgs, backupcc.exception.IOExceptionX.ABORT
+                        );     
+
+                    }//try-catch
+
+                    
                     
                     if (flag) {
                         
@@ -79,14 +114,14 @@ public final class FetchFiles {
                         
                     }
                     
-                    backupcc.net.Util.downloadUrl2Pathname(
+                    backupcc.net.Util.downloadUrlToPathname(
                         urlInfo.getAbsoluteUrl(), 
                         localPathname, 
                         localFilename, 
-                        COLOR,
-                        percentual
+                        COLOR
                     );
-
+           
+   
                     if (localFilename.endsWith(".css")) {
                         
                         searchInFile(
@@ -97,7 +132,6 @@ public final class FetchFiles {
                         );
                         
                     }
-                       
                     
                 }//if
 
@@ -107,10 +141,11 @@ public final class FetchFiles {
 
     }//searchInFile()
        
-    /*[00]----------------------------------------------------------------------
+    /*[02]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/    
-    public static void fetchFiles() throws IOException {
+    public static void fetchFiles() 
+        throws backupcc.exception.IOExceptionX {
         
         File dir = new File(backupcc.file.Util.RAW_PAGES);
         
@@ -130,8 +165,6 @@ public final class FetchFiles {
         bar.show();
                        
         for (File file: listFiles) {
-            
-            percentual = (++count) * 100 / total;
             
             bar.update(++countFiles);
             

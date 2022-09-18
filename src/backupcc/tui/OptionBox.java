@@ -14,7 +14,7 @@ import java.util.Scanner;
  * (pode ser maiuscula ou minuscula) e em seguida ENTER.
  * 
  * @author "Pedro Reis"
- * @since 20 de agosto de 2022
+ * @since 1.0 (20 de agosto de 2022)
  * @version 1.0
  */
 public final class OptionBox {
@@ -307,8 +307,28 @@ public final class OptionBox {
         if (o.showBox() == 'a') System.exit(0);
 
     }//warningBox()
-      
+    
     /*[04]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    public static boolean retryBox(final String[] msgs) {
+        
+        String[] aux = new String[msgs.length + 1]; aux[0] = "Falha!";
+        
+        System.arraycopy(msgs, 0, aux, 1, msgs.length);
+          
+        String[] options = {
+            "Pular",
+            "Tentar novamente"
+        };
+
+        OptionBox o = new OptionBox(aux, options, "pt", Tui.YELLOW, Tui.WHITE);
+        
+        return (o.showBox() == 't'); 
+        
+    }//retryBox()
+      
+    /*[05]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
@@ -319,6 +339,9 @@ public final class OptionBox {
         String[] msgs = {
             "THE END",
             "Deu tudo certo desta vez!\n",
+            backupcc.datetime.Util.getElapsedTimeTo(
+                backupcc.datetime.Util.BACKUP_START_TIME
+            ) + "\n",
             "Pressione qualquer tecla e <ENTER> para fechar o terminal"
         };
 

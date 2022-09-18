@@ -97,6 +97,7 @@ public final class ProgressBar {
     ) {
         
         this(total, barLength, fg, Tui.NONE);
+        backupcc.datetime.Util.setMilestoneTime();
          
     }//construtor
     
@@ -183,7 +184,11 @@ public final class ProgressBar {
         
         if (done == total) {
             Tui.restoreTerminalDefaults();
-            Tui.println(" ");
+            Tui.println(
+                "  " + backupcc.datetime.Util.getElapsedTimeTo(
+                    backupcc.datetime.Util.MILESTONE
+                )
+            );
         }
              
     }//update()

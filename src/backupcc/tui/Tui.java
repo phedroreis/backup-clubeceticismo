@@ -373,7 +373,29 @@ public final class Tui {
                 
         }//switch        
         
-    }//setDecoration()
+    }//setDecoration()   
     
+   /*[18]-----------------------------------------------------------------------
     
+    --------------------------------------------------------------------------*/
+    /**
+     * Para destacar uma substring em uma string. Imprime s1, s2 e s3 decorando 
+     * s2 em negrito, sublinhado e cor padrão do terminal. 
+     * 
+     * @param s1 Parte da String que será impressa em cor color.
+     * @param s2 Parte da String decorada.
+     * @param s3 Parte da String que será impressa em cor color.
+     * 
+     * @param color Cor do texto.
+     */
+    public static void decoratedPrintlnc(
+        final String s1, final String s2, final String s3, final int color
+    ) {
+        printc(s1, color);
+        setDecoration(BOLD + UNDERLINE);
+        print(s2);
+        resetColorsAndDecorations();
+        printlnc(s3, color);
+    }//decoratedPrintlnc()
+           
 }//classe Tui

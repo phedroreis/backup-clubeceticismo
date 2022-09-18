@@ -219,7 +219,7 @@ public final class Incremental {
                     String key = keyValue.substring(0, separatorPosition);
 
                     String value = keyValue.substring(
-                            separatorPosition + 1, keyValue.length()
+                        separatorPosition + 1, keyValue.length()
                     );
 
                     previousLastPostsPerTopic.put(
@@ -315,9 +315,20 @@ public final class Incremental {
     
     --------------------------------------------------------------------------*/
     /**
-     * Grava em disco a lista com o numero de posts em cada topico obtida no
-     * backup corrente.
+     * <p>Grava em disco a lista com o numero de posts em cada topico obtida no
+     * backup corrente.</p>
      * 
+     * <p>Também atualiza a lista de nomes de arquivos que
+     * associa cada post ao arquivo em disco onde este post pode ser 
+     * visualizado na cópia estática. Uma lista completa com estes nomes
+     * de arquivos é necessária para agilizar o processo de edição de links
+     * para posts. No entanto, obviamente, novos posts publicados desde o 
+     * último backup não estão ainda presentes na lista, que portanto é
+     * atualizada ao final do processo de backup</p>
+     * 
+     * <p>Este método deve ser chamado ao término do processo de backup, depois
+     * que foi finalizada a edição de páginas que gera a cópia estática</p>
+     *  
      * @throws IOException Em caso de erro de IO ao tentar gravar o arquivo.
      */
     public static void finish() throws IOException {

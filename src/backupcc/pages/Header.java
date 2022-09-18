@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
  * HEADER apontado na pagina principal que encontrar.
  * 
  * @author "Pedro Reis"
- * @since 23 de agosto de 2022
- * @version 1.0
+ * @since 1.0 (23 de agosto de 2022)
+ * @version 1.1
  */
 public final class Header extends Page {
     /*
@@ -50,11 +50,8 @@ public final class Header extends Page {
      * DEBATES
      * DIVERSAO
      *   
-     * @throws backupcc.pages.UnexpectedHtmlFormatException No caso da
-     * regexp nao conseguir fazer o parse desse bloco de codigo. Sinalizando um
-     * bug do programa ou que o padrao das paginas do forum foi alterado.
      */
-    public Header(final String htmlBlock) throws UnexpectedHtmlFormatException {
+    public Header(final String htmlBlock) {
           
         /*
         Localiza a id e o nome do HEADER no htmlBlock, que por sua vez foi 
@@ -62,7 +59,11 @@ public final class Header extends Page {
         */
         Matcher matcher = ID_AND_NAME.matcher(htmlBlock);
         
-        if (matcher.find()) {
+        boolean find = matcher.find();
+        
+        assert(find == true) : "Can't parse HEADER data for\n\n" + htmlBlock;
+        
+        if (find) {
             
             /* Estes campos sao declarados na super classe Page */
             id = Integer.valueOf(matcher.group(1));
@@ -76,9 +77,17 @@ public final class Header extends Page {
         programa ou o padrao do HTML das paginas do forum foi alterado desde que
         este codigo foi escrito.
         */
-        else throw new UnexpectedHtmlFormatException(
-            "Can't parse HTML to find header data"
-        );
+        else {
+            String[] msgs = {                
+                "Dados de cabe\u00E7alho n\u00E3o localizados\n",
+                "Houve um erro ao fazer o 'parse' de um trecho HTML",
+                "O backup ser\u00E1 abortado\n",
+                "Execute novamente o programa com java -ea 'nomeDoPrograma'",
+                "E contacte o desenvolvedor"
+            };
+            
+            backupcc.tui.OptionBox.abortBox(msgs);
+        }
          
     }//Header()
     

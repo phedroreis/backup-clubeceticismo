@@ -1,11 +1,7 @@
 package backupcc.fetch;
 
-import static backupcc.fetch.FetchPages.specialPrintln;
 import static backupcc.file.Util.readTextFile;
-import static backupcc.net.Util.downloadUrl2Pathname;
 import backupcc.pages.Header;
-import backupcc.pages.UnexpectedHtmlFormatException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -20,11 +16,11 @@ import java.util.regex.Pattern;
  * @since 1.0 (23 de agosto de 2022)
  * @version 1.0
  */
-public final class FetchMain {
+final class FetchMain {
     
     private final backupcc.pages.Main main;
     
-    private final int color;
+    private static final int COLOR = backupcc.tui.Tui.MAGENTA;;
     
     private static final Pattern HEADER_FINDER = 
         backupcc.pages.Header.getFinder();
@@ -40,35 +36,29 @@ public final class FetchMain {
     public FetchMain(final backupcc.pages.Main main) {
         
         this.main = main;
-        color = backupcc.tui.Tui.MAGENTA;
-           
+               
     }//construtor
     
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/    
-    /*
+    /**
      * Baixa a pagina principal do forum para o diretorio onde todas as paginas
      * brutas (arquivos HTML nao editados pelo programa) serao gravadas.
      * 
-     * @throws FileNotFoundException Se o caminho para o arquivo nao existir.
-     * 
-     * @throws IOException Se ocorrer algum erro de IO ao baixar ou na gravacao
-     * do arquivo no disco local.
      */
-    private void download() throws FileNotFoundException, IOException {
-            
-        downloadUrl2Pathname(
+    private void downloadMainPage() {
+              
+        backupcc.net.Util.downloadUrlToPathname(
             main.getAbsoluteURL(),
             backupcc.file.Util.RAW_PAGES + '/' + main.getFilename(),
             main.getName(),
-            color,
-            100
+            COLOR
         );
-        
-    }//download()
+          
+    }//downloadMainPage()
     
-    /*[01]----------------------------------------------------------------------
+    /*[02]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
@@ -83,36 +73,32 @@ public final class FetchMain {
      * @return Um TreeSet (ordenado por ID do Header) com todos os Headers
      * apontados na pagina principal.
      * 
-     * @throws FileNotFoundException Se a pagina principal nao for localizada.
-     * 
-     * @throws IOException Em caso de erro de IO.
-     * 
-     * @throws UnexpectedHtmlFormatException Se a regexp nao localizar os dados
-     * de um HEADER no bloco HTML da pagina principal como seria de se esperar.
-     * Sinalizando um bug no codigo deste programa ou que o padrao HTML das 
-     * paginas do forum foi alterado.
      */
-    public TreeSet<Header> getHeaders()
-        throws 
-            FileNotFoundException,
-            IOException, 
-            UnexpectedHtmlFormatException {
+    public TreeSet<Header> getHeaders() {
         
-        download();
+        downloadMainPage();
         
-        String mainPage = readTextFile(
-            backupcc.file.Util.RAW_PAGES + '/' + main.getFilename()
-        );
+        String mainPage = null;
+        try {
+            
+            mainPage = readTextFile(
+                backupcc.file.Util.RAW_PAGES + '/' + main.getFilename()
+            );
+            
+        } catch (IOException e) {
+            
+            backupcc.fetch.Util.readTextFileExceptionHandler(e);
+        }
         
         TreeSet <Header> headers; headers = new TreeSet<>();
         
         Matcher matcher = HEADER_FINDER.matcher(mainPage);
         
-        specialPrintln(
+        backupcc.tui.Tui.decoratedPrintlnc(
             "Coletando dados de ", 
             "cabe\u00E7alhos",
             " na " + main.getName() + " ...", 
-            color
+            COLOR
         );
         
         while (matcher.find()) {
@@ -124,7 +110,6 @@ public final class FetchMain {
                 
         return headers;
         
-    }//getHeaders()
-    
+    }//getHeaders()    
    
 }//classe FetchMain

@@ -1,13 +1,5 @@
 package backupcc.main;
 
-import static backupcc.edit.EditableLink.editFiles;
-import static backupcc.fetch.FetchFiles.fetchFiles;
-import static backupcc.fetch.FetchPages.downloadPages;
-import static backupcc.file.Util.createWarningFile;
-import static backupcc.file.Util.mkDirs;
-import backupcc.incremental.Incremental;
-import backupcc.pages.UnexpectedHtmlFormatException;
-import static backupcc.tui.OptionBox.abortBox;
 import java.io.IOException;
 
 /**
@@ -25,72 +17,71 @@ public final class Main {
     public static void main(String[] args) {
         
         /* Processa os parametros de linha de comando*/
-        backupcc.command.CommandLine.parseCommandLine(args);
+        backupcc.command.CommandLine commandLine = 
+            new backupcc.command.CommandLine(args);
+        
+        backupcc.tui.Tui.println(commandLine.toString() + "\n");
                   
         /* Cria os diretorios se ainda nao existirem */
         try {  
             
-            mkDirs(backupcc.file.Util.RAW_PAGES);
-            createWarningFile();
+            backupcc.file.Util.mkDirs(backupcc.file.Util.RAW_PAGES);
+            backupcc.file.Util.createWarningFile();
             
         }
         catch (IOException e) {
             
             String[] msgs = {
-                "Imposs\u00EDvel criar diret\u00F3rio ou arquivo:\n",
-                e.getMessage()
+                e.getMessage() + "\n",
+                "Imposs\u00EDvel criar diret\u00F3rio ou arquivo" 
             };
                         
-            abortBox(msgs);
+            backupcc.tui.OptionBox.abortBox(msgs);
                            
         }//try-catch
         
         /* Inicializa o sistema para um backup incremental */
-        Incremental.init();
+        backupcc.incremental.Incremental.init();
         
         backupcc.tui.Tui.println(
-            backupcc.incremental.Incremental.lastBackupDatetime()
+            backupcc.incremental.Incremental.lastBackupDatetime() + "\n"
         );
-        backupcc.tui.Tui.println(" ");
+        
+        backupcc.datetime.Util.setBackupStartTime();
         
         /* Baixa paginas e arquivos do servidor */
         try {
             
-            downloadPages();
-            fetchFiles();
+            backupcc.fetch.FetchPages.downloadPages();
+            backupcc.fetch.FetchFiles.fetchFiles();
            
         }
-        catch (IOException | UnexpectedHtmlFormatException e) {
+        catch (IOException e) {
             
             String[] msgs = {
-                "Falha ao baixar arquivos\n",
-                e.getMessage()
+                e.getMessage() + "\n",
+                "Falha ao baixar arquivos" 
             };
                         
-            abortBox(msgs);
+            backupcc.tui.OptionBox.abortBox(msgs);
   
-        }
+        }//try-catch
         
         try {
             
-            editFiles();
-            
-        } catch (IOException e) {
-            
-            
-            String[] msgs = {
-                "Falha ao gravar arquivos\n",
-                e.getMessage()
-            };
-                        
-            abortBox(msgs);
+            backupcc.edit.EditableLink.editFiles();
             
         }
+        catch (backupcc.exception.IOExceptionX e) {
+                     
+            e.handler();
+            
+        }//try-catch
         
         /* Grava arquivos de finalizacao */
         try {
             
-            Incremental.finish();
+            backupcc.incremental.Incremental.finish();
             
         }
         catch (IOException e) {
@@ -98,7 +89,7 @@ public final class Main {
             System.err.println(e);
             System.exit(1);
   
-        }
+        }//try-catch
         
         backupcc.tui.OptionBox.theEndBox();
         

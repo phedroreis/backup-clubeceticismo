@@ -8,20 +8,27 @@ import java.io.FilenameFilter;
  * convertidos para a versão estática.
  * 
  * @author "Pedro Reis"
- * @since 10 de setembro de 2022
+ * @since 1.0 (10 de setembro de 2022)
  * @version 1.0
  */
 final class FilesWithPostLinksToBeEditedFilter implements FilenameFilter {
-    
-    private final int postLinkParseLevel;
+    /**
+     * Determina em que tipos de páginas (principal, seções, tópicos) os liinks
+     * para posts devem ser redirecionados para arquivos de tópico na cópia
+     * estática.
+     */
+    private final int postLinksRedirectLevel;
     
     /*[00]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
+    /**
+     * Construtor da classe.
+     */
     public FilesWithPostLinksToBeEditedFilter() {
         
-        postLinkParseLevel = 
-            backupcc.command.CommandLine.getPostLinkParseLevel();
+        postLinksRedirectLevel = 
+            backupcc.command.CommandLine.getPostLinksRedirectLevel();
        
     }//construtor
      
@@ -42,7 +49,7 @@ final class FilesWithPostLinksToBeEditedFilter implements FilenameFilter {
     @Override
     public boolean accept(File dir, String filename) {
         
-        switch (postLinkParseLevel) {            
+        switch (postLinksRedirectLevel) {            
             case 3 : if (filename.startsWith("t=")) return true;
             case 2 : if (filename.startsWith("f=")) return true;
             case 1 : return filename.equals(backupcc.file.Util.INDEX_HTML);

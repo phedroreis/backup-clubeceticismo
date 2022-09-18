@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
  * topico apontado na pagina de secao que encontrar.
  *
  * @author "Pedro Reis"
- * @since 25 de agosto de 2022
- * @version 1.0
+ * @since 1.0 (25 de agosto de 2022)
+ * @version 1.1
  */
 public final class Topic extends Page {
     
@@ -42,12 +42,9 @@ public final class Topic extends Page {
      * 
      * @param htmlBlock O bloco de codigo HTML da pagina de secao do forum de
      * onde se pode extrair dados de um topico.
-     *   
-     * @throws backupcc.pages.UnexpectedHtmlFormatException No caso da
-     * regexp nao conseguir fazer o parse desse bloco de codigo. Sinalizando um
-     * bug do programa ou que o padrao das paginas do forum foi alterado.
+     * 
      */
-    public Topic(final String htmlBlock) throws UnexpectedHtmlFormatException{
+    public Topic(final String htmlBlock) {
          
         /*
         Localiza a id e o nome da Section no htmlBlock, que por sua vez foi 
@@ -55,7 +52,11 @@ public final class Topic extends Page {
         */
         Matcher matcher = FINDER_REGEXP.matcher(htmlBlock);
         
-        if (matcher.find()) {
+        boolean find = matcher.find();
+        
+        assert(find == true) : "Can't parse TOPIC data for\n\n" + htmlBlock;
+        
+        if (find) {
             
             /* Estes campos sao declarados na super classe Page */
             id = Integer.valueOf(matcher.group(1));
@@ -70,9 +71,19 @@ public final class Topic extends Page {
         programa ou o padrao do HTML das paginas do forum foi alterado desde que
         este codigo foi escrito.
         */
-        else throw new UnexpectedHtmlFormatException(
-            "Can't parse HTML to find section data"
-        );
+        else {
+            numberOfPosts = 0;//final tem que ser inicializada
+            
+            String[] msgs = {                
+                "Dados de t\u00F3pico n\u00E3o localizados\n",
+                "Houve um erro ao fazer o 'parse' de um trecho HTML",
+                "O backup ser\u00E1 abortado\n",
+                "Execute novamente o programa com java -ea 'nomeDoPrograma'",
+                "E contacte o desenvolvedor"
+            };
+            
+            backupcc.tui.OptionBox.abortBox(msgs);
+        }
          
     }//construtor
     

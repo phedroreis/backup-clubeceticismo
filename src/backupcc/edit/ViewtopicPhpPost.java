@@ -23,51 +23,16 @@ final class ViewtopicPhpPost extends EditableLink {
     private static final Pattern CANNONICAL_URL = 
         Pattern.compile("\\s*?<link rel=\"canonical\".+?t=(\\d+).*?\">\\s*");
     
-    private static final String[] MSGS= {
-        "Falha!",
-        "Imposs\u00EDvel decodificar link para post\n",
-        "Voc\u00EA pode tentar novamente ou pular este link\n",
-        "Se pular, o link n\u00E3o ir\u00E1 funcionar na " +
-        "c\u00F3pia est\u00E1tica,",
-        "mas o problema ser\u00E1 provavelmente corrigido no pr\u00F3ximo" +
-        " backup incremental"        
-    };
-    
-    private static final String[] OPTIONS = {
-        "Pular este link",
-        "Tentar novamente"
-    };
-    
-    private static final backupcc.tui.OptionBox FAIL_BOX = 
-        new backupcc.tui.OptionBox(
-            MSGS, 
-            OPTIONS, 
-            "pt", 
-            backupcc.tui.Tui.YELLOW, 
-            backupcc.tui.Tui.WHITE
-        );
-    
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
-    private static String getFilename(
-        final String theUrl,
-        final String post
-    ) throws IOException {
-        
-        String filename =
-            backupcc.incremental.Incremental.getFilenameOnMap(
-                Integer.valueOf(post)
-            );
-        
-        if (filename != null) return filename;
-    
-        URL url = new URL(theUrl);
+    private static String getFilenameOnServer(final String url, final int post)
+        throws IOException {
         
         try (
             BufferedReader br = 
                 new BufferedReader(
-                    new InputStreamReader(url.openStream()), 8192
+                    new InputStreamReader(new URL(url).openStream()), 8192
                 )
         ) {
 
@@ -90,22 +55,19 @@ final class ViewtopicPhpPost extends EditableLink {
                                         
                     sb.append(".html#p").append(post);
                     
-                    filename = sb.toString();
+                    String filename = sb.toString();
                     
-                    if (
+                    boolean putOk = 
                         backupcc.incremental.Incremental.putFilenameOnMap(
                             filename
-                        )
-                    )                  
-                        backupcc.incremental.Incremental.putFilenameOnList(
-                            filename
-                        );
-                    else
-                        throw new IllegalArgumentException(
-                            "PostId readed from server was already in map: " +
-                             post
                         );
                     
+                    assert(putOk) : "This filename was already on map";
+                                    
+                    backupcc.incremental.Incremental.putFilenameOnList(
+                        filename
+                    );
+                                       
                     return filename;
                     
                 }//if
@@ -114,11 +76,26 @@ final class ViewtopicPhpPost extends EditableLink {
 
         }//try
         
-        return null;
+        return null;   
+        
+    }//getFilenameOnServer()
+       
+    /*[02]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    private static String getFilename(final String url, final int post) 
+        throws IOException {
+        
+        String filename = 
+            backupcc.incremental.Incremental.getFilenameOnMap(post);
+        
+        if (filename != null) return filename;
+        
+        return getFilenameOnServer(url, post);    
         
     }//getFilename()
     
-    /*[02]----------------------------------------------------------------------
+    /*[03]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     @Override
@@ -130,38 +107,39 @@ final class ViewtopicPhpPost extends EditableLink {
         
         url = url.replace("amp;", "");
         
-        String post = matcher.group(2);
+        int post = Integer.valueOf(matcher.group(2));
         
-        boolean retry = false;
+        boolean retry;
         
         do {
+            
+            retry = false;
             
             try {
 
                 String filename = getFilename(url, post);
+                
+                assert(filename != null) : "Can't find the file of this post";
 
                 hashMap.put(original, filename);
 
             } catch (IOException e) {
+                                
+                String[] msgs = {
+                    e.getMessage(),
+                    "LINK: " + original,
+                    "Erro ao decodificar link para post\n",
+                    "Voc\u00EA pode tentar novamente ou pular este link\n",
+                    "Se pular, o link n\u00E3o ir\u00E1 funcionar na " +
+                    "c\u00F3pia est\u00E1tica,",
+                    "mas o problema ser\u00E1 provavelmente corrigido no" +
+                    " pr\u00F3ximo backup incremental"        
+                };                
                 
-                backupcc.tui.Tui.println(" ");
-                backupcc.tui.Tui.println(" ");
-                
-                backupcc.tui.Tui.printlnc(e.getMessage(), backupcc.tui.Tui.RED);
-                
-                backupcc.tui.Tui.println(" ");
-                
-                backupcc.tui.Tui.printlnc(
-                    "LINK: " + original, 
-                    backupcc.tui.Tui.RED
-                );
-                
-                backupcc.tui.Tui.println(" ");
-
-                retry = (FAIL_BOX.showBox() == 't');
+                retry = backupcc.tui.OptionBox.retryBox(msgs);
             }
-        }
-        while (retry);        
+            
+        }while (retry);        
 
     }//map()
     
@@ -173,8 +151,7 @@ final class ViewtopicPhpPost extends EditableLink {
         
         return VIEWTOPIC_REGEX;
         
-    }//getPattern()
-    
+    }//getPattern()    
         
 }//classe ViewtopicPhpPost
 

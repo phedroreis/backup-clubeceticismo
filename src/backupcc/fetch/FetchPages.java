@@ -1,14 +1,12 @@
 package backupcc.fetch;
 
-import backupcc.pages.UnexpectedHtmlFormatException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 /**
- *
+ * Classe pública do pacote que fornece o método {@link #downloadPages() }
+ * encarregado de baixar todas as páginas do fórum.
+ * 
  * @author "Pedro Reis"
- * @since 25 de agosto de 2022
- * @version 1.0
+ * @since 1.0 (25 de agosto de 2022)
+ * @version 1.1
  */
 public final class FetchPages {
     
@@ -16,13 +14,10 @@ public final class FetchPages {
     
     --------------------------------------------------------------------------*/
     /**
-     *  
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws UnexpectedHtmlFormatException 
+     * Baixa todas as páginas do fórum. 
+     * 
      */
-    public static void downloadPages() throws
-        IOException, FileNotFoundException, UnexpectedHtmlFormatException {
+    public static void downloadPages() {
         
         backupcc.pages.Main main = 
             new backupcc.pages.Main(
@@ -32,23 +27,8 @@ public final class FetchPages {
                          
         FetchTopics topicsPages = new FetchTopics(main);
         
-        topicsPages.download();
+        topicsPages.downloadTopicsPages();
                
     }//downloadPages()
     
-   /*[02]----------------------------------------------------------------------
-    
-    --------------------------------------------------------------------------*/ 
-    protected static void specialPrintln(
-        final String s1, final String s2, final String s3, final int color
-    ) {
-        backupcc.tui.Tui.printc(s1, color);
-        backupcc.tui.Tui.setDecoration(
-            backupcc.tui.Tui.BOLD + backupcc.tui.Tui.UNDERLINE
-        );
-        backupcc.tui.Tui.print(s2);
-        backupcc.tui.Tui.resetColorsAndDecorations();
-        backupcc.tui.Tui.printlnc(s3, color);
-    }//specialPrintln()
-        
 }//classe FetchPages

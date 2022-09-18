@@ -1,23 +1,18 @@
 package backupcc.net;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Metodos e campos estaticos relacionados com operacoes de conexao de internet.
  * 
  * @author "Pedro Reis"
- * @since 21 de agosto de 2022
- * @version 1.0
+ * @since 1.0 (21 de agosto de 2022)
+ * @version 1.1
  */
 public final class Util {
      
@@ -51,54 +46,93 @@ public final class Util {
      * com o nome indicado em pathname nao existir, serah criado um arquivo com
      * esse nome.
      * 
-     * @throws java.net.MalformedURLException Caso a URL passada ao metodo seja
-     * mal formada.
+     * @param name O nome (sem o caminho) do arquivo.
      * 
-     * @throws java.io.FileNotFoundException Se o arquivo que se esta tentando
-     * baixar nao existir no servidor ou se o pathname passado nao existir na
-     * maquina cliente. Embora possa nao existir o arquivo com o nome indicado
-     * para gravacao (neste caso um arquivo com este nome serah criado no 
-     * diretorio indicado), os diretorios no caminho devem jah existir e nao 
-     * serao criados por este metodo.
+     * @param color A cor do texto com a qual o método vai escrever a mensagem
+     * no terminal.
      * 
-     * @throws java.io.IOException Em caso de erro de IO. 
      */
-    public static void downloadUrl2Pathname(
+    public static void downloadUrlToPathname(
         final String url, 
-        final String pathname
-    ) throws MalformedURLException, FileNotFoundException, IOException {
-        
-        URL theFile = new URL(url);
-        
-        try (
-                
-            FileOutputStream fos = new FileOutputStream(pathname);
-
-            ReadableByteChannel rbc = Channels.newChannel(theFile.openStream());
-                
-        ) {
-            
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        }           
-
-    }//downloadUrl2Pathname()   
-    
-    /*[02]----------------------------------------------------------------------
-    
-    --------------------------------------------------------------------------*/
-    public static void downloadUrl2Pathname(
-        final String url,
         final String pathname,
         final String name,
-        final int color,
-        final int percentual
-    ) throws MalformedURLException, FileNotFoundException, IOException {
+        final int color
+    ) {
         
-        backupcc.tui.Tui.printlnc(
-            "Obtendo " + name + " ... (" + percentual + "%)",
-            color
-        );
-        downloadUrl2Pathname(url, pathname);
-    }
-    
+        if (name != null)
+            backupcc.tui.Tui.printlnc("Obtendo " + name + " ...", color);
+        
+        URL theFile = null;
+        try {
+            
+            theFile = new URL(url);
+            
+        } 
+        catch (MalformedURLException e) {}
+        
+        boolean retry;
+        
+        do {
+            retry = false;
+            try (
+
+                FileOutputStream fos = new FileOutputStream(pathname);
+
+                @SuppressWarnings("null")
+                ReadableByteChannel rbc = 
+                    Channels.newChannel(theFile.openStream());
+
+            ) {
+
+                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            }
+            catch (IOException e) {
+                
+                String[] msgs = {
+                    e.getMessage() + "\n",
+                    "Erro ao obter: " + pathname + "\n",
+                    "Você pode desistir ou tentar novamente\n",
+                    "Contudo se pular um arquivo HTML, CSS ou JS, o backup " +
+                    "sera abortado"
+                };
+                
+                retry = backupcc.tui.OptionBox.retryBox(msgs);
+                                
+                if (!retry) {
+                    
+                    if (
+                            (pathname.endsWith(".html")) ||
+                            (pathname.endsWith(".js")) ||
+                            (pathname.endsWith(".css"))
+                    ) {
+                        String[] abortMsgs = {
+                            "Falha ao obter: " + pathname + "\n",
+                            "C\u00F3digo fonte n\u00E3o pode ser descartado\n ",
+                            "Tente mais tarde realizar outro backup"
+                        };
+                        
+                        backupcc.tui.OptionBox.abortBox(abortMsgs);
+                        
+                    } 
+                    else {
+                        
+                        String[] warnMsgs = {
+                            "Falha ao obter: " + pathname + "\n",
+                            "O backup ainda pode prosseguir, mas a",
+                            "aus\u00EAncia deste arquivo prejudicar a",
+                            "visualiza\u00E3\u00E3o de algumas p\u00E1ginas"
+                        };
+                        
+                        backupcc.tui.OptionBox.warningBox(warnMsgs);
+                                    
+                    }//if-else
+                    
+                }//if !retry    
+                
+            }//try-cache
+            
+        }while (retry);
+       
+    }//downloadUrlToPathname()   
+        
 }//classe Util

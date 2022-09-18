@@ -1,20 +1,16 @@
 package backupcc.fetch;
 
 import backupcc.incremental.Incremental;
-import static backupcc.net.Util.downloadUrl2Pathname;
 import backupcc.pages.Topic;
-import backupcc.pages.UnexpectedHtmlFormatException;
 import backupcc.tui.ProgressBar;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.TreeSet;
 
 /**
  * Classe encarregada de baixar as paginas de topico.
  *
  * @author "Pedro Reis"
- * @since 25 de agosto de 2022
- * @version 1.0
+ * @since 1.0 (25 de agosto de 2022)
+ * @version 1.1
  */
 final class FetchTopics {
     /*
@@ -22,7 +18,7 @@ final class FetchTopics {
     */  
     private final backupcc.pages.Main main;
     
-    private final int color;
+    private static final int COLOR = backupcc.tui.Tui.GREEN;;
     
     private TreeSet<Topic> topics;
         
@@ -37,42 +33,64 @@ final class FetchTopics {
     public FetchTopics(final backupcc.pages.Main main) {
         
         this.main = main;
-        color = backupcc.tui.Tui.GREEN;
-        
+                
     }//construtor
     
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
-    /*
-     * Baixa as paginas de secao.
+    private void showUpdatedInfo(
+        final int updatedTopics, 
+        final int totalOfNewPosts
+    ) {
+        
+        String format = String.format(
+            "%s%d t\u00F3pico%s com novas postagens desde " +
+            "o \u00FAltimo backup",
+            (updatedTopics > 0) ? "\n" : "",
+            updatedTopics,
+            ((updatedTopics == 1) ? "" : "s")
+        );
+
+        backupcc.tui.Tui.printlnc(format, COLOR);
+
+        format = String.format(
+            "%d post%s desde o \u00FAltimo backup",
+            totalOfNewPosts,
+            (totalOfNewPosts == 1) ? "" : "s"
+        );
+
+        backupcc.tui.Tui.printlnc(format, COLOR);
+
+    }//showUpdatedInfo()
+    
+    /*[02]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Baixa as paginas de tópicos.
      * 
-     * @throws FileNotFoundException Se o caminho para o arquivo nao existir.
-     * 
-     * @throws IOException Se ocorrer algum erro de IO ao baixar ou na gravacao
-     * do arquivo no disco local.
-     * 
-     * @throws backupcc.pages.UnexpectedHtmlFormatException
      */
-    public void download() throws
-        FileNotFoundException, IOException, UnexpectedHtmlFormatException {
+    public void downloadTopicsPages() {
+        
+        boolean isIncrementalBackup =
+            (backupcc.incremental.Incremental.isIncremental());
         
         FetchSections sectionsPages = new FetchSections(main);
-        
+     
         topics = sectionsPages.getTopics();
-         
+           
         int total = topics.size(); 
         
-        backupcc.tui.Tui.println(" ");   
         backupcc.tui.Tui.printlnc(
-            total + " t\u00F3picos p\u00FAblicos encontrados.", color);
-        backupcc.tui.Tui.println(" "); 
+            "\n" + total + " t\u00F3picos p\u00FAblicos encontrados.\n", COLOR
+        );
+    
         backupcc.tui.Tui.printlnc(
-            "Obtendo p\u00E1ginas de t\u00F3picos ...", color
+            "Obtendo p\u00E1ginas de t\u00F3picos ...", COLOR
         );
          
-        ProgressBar pBar = 
-            new ProgressBar(total, backupcc.tui.ProgressBar.LENGTH, color);
+        ProgressBar pBar = new ProgressBar(total, ProgressBar.LENGTH, COLOR);
         
         int countTopics = 0;
         
@@ -107,31 +125,19 @@ final class FetchTopics {
                 
                 int lastPageToDownload = topic.getNumberOfPages();
 
-                for (
-                    int i = firstPageToDownload - 1; i < lastPageToDownload; i++
-                ) {
+                for (int i = firstPageToDownload-1; i<lastPageToDownload; i++) {
                     
-                    if (backupcc.incremental.Incremental.isIncremental()) {
+                    String name = isIncrementalBackup ?
+                        topic.getName() + " [" + (i+1) +"]" : null;
                                             
-                        downloadUrl2Pathname(
-                            topic.getAbsoluteURL(i), 
-                            backupcc.file.Util.RAW_PAGES + '/' + 
-                            topic.getFilename(i),
-                            topic.getName() + " [" + (i+1) +"]",
-                            color,
-                            countTopics * 100 / total
-                        );
-                    }
-                    else {
-                    
-                        downloadUrl2Pathname(
-                            topic.getAbsoluteURL(i), 
-                            backupcc.file.Util.RAW_PAGES + '/' + 
-                            topic.getFilename(i)
-                        );
-                        
-                    }//if-else
-                    
+                    backupcc.net.Util.downloadUrlToPathname(
+                        topic.getAbsoluteURL(i), 
+                        backupcc.file.Util.RAW_PAGES + '/' + 
+                        topic.getFilename(i),
+                        name,
+                        COLOR
+                    );
+                   
                 }//for i
             
             }//if
@@ -140,29 +146,10 @@ final class FetchTopics {
             
         }//for topic
         
-        if (backupcc.incremental.Incremental.isIncremental()) {
-            
-            if (updatedTopics > 0) backupcc.tui.Tui.println(" ");
-            
-            String topico = " t\u00F3pico" + ((updatedTopics == 1) ? "" : "s");
-            
-            backupcc.tui.Tui.printlnc(
-                updatedTopics + 
-                topico + " com novas postagens desde o \u00FAltimo backup.",
-                color
-            );
-            
-            String post = " post" + ((totalOfNewPosts == 1) ? "" : "s");
-            
-            backupcc.tui.Tui.printlnc(
-                totalOfNewPosts + post + " desde o \u00FAltimo backup.",
-                color
-            );
-            
-        }//if
+        if (isIncrementalBackup) 
+            showUpdatedInfo(updatedTopics, totalOfNewPosts);
         
-    }//download()
-
+    }//downloadTopicsPages()
 
 }//classe FetchTopics
 

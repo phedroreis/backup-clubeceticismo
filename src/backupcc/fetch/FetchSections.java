@@ -1,13 +1,9 @@
 package backupcc.fetch;
 
-import static backupcc.fetch.FetchPages.specialPrintln;
 import static backupcc.file.Util.readTextFile;
 import backupcc.incremental.Incremental;
-import static backupcc.net.Util.downloadUrl2Pathname;
 import backupcc.pages.Section;
 import backupcc.pages.Topic;
-import backupcc.pages.UnexpectedHtmlFormatException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -19,8 +15,8 @@ import java.util.regex.Pattern;
  * TreeSet.
  *
  * @author "Pedro Reis"
- * @since 25 de agosto de 2022
- * @version 1.0
+ * @since 1.0 (25 de agosto de 2022)
+ * @version 1.1
  */
 final class FetchSections {
     /*
@@ -28,7 +24,7 @@ final class FetchSections {
     */  
     private final backupcc.pages.Main main;
     
-    private final int color;
+    private static final int COLOR = backupcc.tui.Tui.BLUE;
     
     private static final Pattern TOPIC_FINDER = 
         backupcc.pages.Topic.getFinder();
@@ -46,88 +42,79 @@ final class FetchSections {
     public FetchSections(final backupcc.pages.Main main) {
         
         this.main = main;
-        color = backupcc.tui.Tui.BLUE;
-        
+          
     }//construtor
     
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /*
-     * Baixa as paginas de secao.
+     * Baixa as páginas de seçâo.
      * 
-     * @throws FileNotFoundException Se o caminho para o arquivo nao existir.
-     * 
-     * @throws IOException Se ocorrer algum erro de IO ao baixar ou na gravacao
-     * do arquivo no disco local.
-     * 
-     * @throws backupcc.pages.UnexpectedHtmlFormatException
      */
-    private void download() throws
-        FileNotFoundException, IOException, UnexpectedHtmlFormatException {
+    private void downloadSectionsPages() {
         
         FetchHeaders headersPages = new FetchHeaders(main);
         
         sections = headersPages.getSections();
         
-        int total = sections.size();
-        
-        int count = 0;
-         
         for (Section section: sections) {
-            
-            count++;
-            
+               
             for (int i = 0; i < section.getNumberOfPages(); i++) {
          
-                downloadUrl2Pathname(
+                backupcc.net.Util.downloadUrlToPathname(
                     section.getAbsoluteURL(i), 
                     backupcc.file.Util.RAW_PAGES + '/' + section.getFilename(i),
                     section.getName() + " [" + (i + 1) + "]",
-                    color,
-                    count * 100 / total
+                    COLOR
                 );
+                
             }//for i
             
         }//for section
         
-    }//download()
+    }//downloadSectionsPages()
     
     /*[02]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
     /**
+     * Processa os arquivos com as páginas de seção para obter os dados que
+     * permitam baixar todas as páginas de tópicos.
      * 
-     * @return
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws UnexpectedHtmlFormatException 
+     * @return Um TreeSet com registros para todos os tópicos do fórum.
      */
-    public TreeSet<Topic> getTopics()
-        throws 
-            FileNotFoundException,
-            IOException, 
-            UnexpectedHtmlFormatException {
+    public TreeSet<Topic> getTopics() {
         
-        download();
+        downloadSectionsPages();
         
         TreeSet<Topic> topics = new TreeSet<>();
                   
         for (Section section: sections) {
+            
+            String sectionPage = null;
     
             for (int i = 0; i < section.getNumberOfPages(); i++) {
 
-                String sectionPage = readTextFile(
-                    backupcc.file.Util.RAW_PAGES + '/' + section.getFilename(i)
-                );
+                try {
+                    
+                    sectionPage = readTextFile(
+                        backupcc.file.Util.RAW_PAGES + '/' +
+                        section.getFilename(i)
+                    );
+                }
+                catch (IOException e) {
+                    
+                    backupcc.fetch.Util.readTextFileExceptionHandler(e);
+                }
 
                 Matcher matcher = TOPIC_FINDER.matcher(sectionPage);
                 
-                specialPrintln(
+                backupcc.tui.Tui.decoratedPrintlnc(
                     "Coletando dados de ", 
                     "t\u00F3picos",
                     " em " + section.getName() + "  [" + (i+1) + "] ...", 
-                    color
+                    COLOR
                 );                
                 
                 while (matcher.find()) {
