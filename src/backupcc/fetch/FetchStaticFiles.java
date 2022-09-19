@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * @since 1.0 (3 de setembro 2022)
  * @version 1.1
  */
-public final class FetchFiles {
+public final class FetchStaticFiles {
     
     private static final int COLOR = backupcc.tui.Tui.CYAN;
     
@@ -34,11 +34,11 @@ public final class FetchFiles {
         final Pattern pattern,
         final int group,
         final String serverPath
-    ) throws backupcc.exception.IOExceptionX {
+    ) {
         
         String forumUrlPrefix = backupcc.net.Util.FORUM_URL + '/';
         
-        String contentFile;
+        String contentFile = null;
         
         try {
             
@@ -46,15 +46,8 @@ public final class FetchFiles {
             
         }
         catch (IOException e) {
-            
-            String[] msgs = {
-                e.getMessage() + "\n",
-                "Falha ao ler arquivo: " + file.getName(),
-            };
-            
-            throw new backupcc.exception.IOExceptionX(
-                msgs, backupcc.exception.IOExceptionX.ABORT
-            );     
+               
+            backupcc.fetch.Util.readTextFileExceptionHandler(e);
             
         }//try-catch
 
@@ -98,9 +91,7 @@ public final class FetchFiles {
                             "Falha ao criar diret\u00F3rio: " + localPath
                         };
 
-                        throw new backupcc.exception.IOExceptionX(
-                            msgs, backupcc.exception.IOExceptionX.ABORT
-                        );     
+                        backupcc.tui.OptionBox.abortBox(msgs);
 
                     }//try-catch
 
@@ -144,8 +135,7 @@ public final class FetchFiles {
     /*[02]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/    
-    public static void fetchFiles() 
-        throws backupcc.exception.IOExceptionX {
+    public static void fetchStaticFiles() {
         
         File dir = new File(backupcc.file.Util.RAW_PAGES);
         
@@ -172,7 +162,7 @@ public final class FetchFiles {
             
         }//for file
         
-    }//fetch()
+    }//fetchStaticFiles()
     
     
-}//classe FetchFiles
+}//classe FetchStaticFiles

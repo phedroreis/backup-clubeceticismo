@@ -27,7 +27,7 @@ public final class FetchPages {
                          
         FetchTopics topicsPages = new FetchTopics(main);
         
-        topicsPages.downloadTopicsPages();
+        topicsPages.getPosts();
                
     }//downloadPages()
     

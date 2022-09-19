@@ -92,8 +92,8 @@ public final class Util {
                     e.getMessage() + "\n",
                     "Erro ao obter: " + pathname + "\n",
                     "Você pode desistir ou tentar novamente\n",
-                    "Contudo se pular um arquivo HTML, CSS ou JS, o backup " +
-                    "sera abortado"
+                    "Contudo, se pular um arquivo HTML, CSS ou JS, o backup " +
+                    "ser\u00E1 abortado"
                 };
                 
                 retry = backupcc.tui.OptionBox.retryBox(msgs);
@@ -107,7 +107,7 @@ public final class Util {
                     ) {
                         String[] abortMsgs = {
                             "Falha ao obter: " + pathname + "\n",
-                            "C\u00F3digo fonte n\u00E3o pode ser descartado\n ",
+                            "C\u00F3digo fonte n\u00E3o pode ser descartado\n",
                             "Tente mais tarde realizar outro backup"
                         };
                         

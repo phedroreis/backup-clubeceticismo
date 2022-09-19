@@ -271,7 +271,7 @@ public final class OptionBox {
         System.arraycopy(msgs, 0, aux, 1, msgs.length);
          
         String[] options = {
-            "< Qualquer tecla + ENTER > para terminar."
+            "Qualquer tecla e <ENTER> para terminar."
         };
 
         OptionBox o = new OptionBox(aux, options, ".", Tui.RED, Tui.WHITE);

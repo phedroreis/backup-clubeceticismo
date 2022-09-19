@@ -12,7 +12,8 @@
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/package-info.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Page.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Topic.java</file>
-            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchFiles.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/Util.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchStaticFiles.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/command/CommandLine.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/strings/StringEditor.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/command/package-info.java</file>
@@ -26,6 +27,7 @@
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/datetime/Util.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/EditableLink.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/ViewtopicPhp.java</file>
+            <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/pages/Post.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/tui/OptionBox.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/edit/IndexPhp.java</file>
             <file>file:/home/userhugo/dev/NetBeansProjects/backup-clubeceticismo/src/backupcc/fetch/FetchPages.java</file>

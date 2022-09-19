@@ -56,7 +56,7 @@ public abstract class Page implements Comparable {
     protected String absoluteURL;
     
     public static final int MAX_ROWS_PER_PAGE = 50;
-        
+    
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/   
@@ -162,7 +162,7 @@ public abstract class Page implements Comparable {
      * id das paginas. Na estrutura TreeSet que ira armazenar objetos de 
      * subclasses de Page, estes objetos estarao portanto ordenados pela id.
      * 
-     * @param page Um objeto Header, Section ou Topic.
+     * @param page Um objeto Main, Header, Section, Topic, ou Post.
      * 
      * @return Um numero positivo se a Id deste item for maior que a do item
      * comparado. 0 se for igual e negativo se for menor.

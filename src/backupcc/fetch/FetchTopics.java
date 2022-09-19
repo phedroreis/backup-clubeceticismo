@@ -1,9 +1,15 @@
 package backupcc.fetch;
 
+import static backupcc.file.Util.readTextFile;
 import backupcc.incremental.Incremental;
 import backupcc.pages.Topic;
 import backupcc.tui.ProgressBar;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Classe encarregada de baixar as paginas de topico.
@@ -17,6 +23,8 @@ final class FetchTopics {
     Objeto com os dados da pagina principal do forum.
     */  
     private final backupcc.pages.Main main;
+    
+    private static final Pattern POST_FINDER = backupcc.pages.Post.getFinder();
     
     private static final int COLOR = backupcc.tui.Tui.GREEN;;
     
@@ -71,7 +79,7 @@ final class FetchTopics {
      * Baixa as paginas de tópicos.
      * 
      */
-    public void downloadTopicsPages() {
+    private void downloadTopicsPages() {
         
         boolean isIncrementalBackup =
             (backupcc.incremental.Incremental.isIncremental());
@@ -150,6 +158,87 @@ final class FetchTopics {
             showUpdatedInfo(updatedTopics, totalOfNewPosts);
         
     }//downloadTopicsPages()
+    
+    private static final Pattern TOPIC_FILENAME_PATTERN = 
+        Pattern.compile("t=(\\d+)(&start=(\\d+))");
+    
+    /*[03]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    public void getPosts() {
+        
+        downloadTopicsPages();
+        
+        backupcc.tui.Tui.printlnc("\nColetando posts ...", COLOR);
+        
+        File rawPages = new File(backupcc.file.Util.RAW_PAGES);
+        
+        @SuppressWarnings("Convert2Lambda")
+        File[] topicsFiles = rawPages.listFiles(
+            new FilenameFilter(){
+                @Override
+                public boolean accept(File dir, String filename){
+                    return filename.startsWith("t=");
+                }
+            }
+        );
+        
+        String topicPage = null;
+        
+        int total = topicsFiles.length;
+        
+        int countTopics = 0;
+              
+        ProgressBar pBar = 
+            new ProgressBar(
+                total, 
+                (total > ProgressBar.LENGTH) ? ProgressBar.LENGTH : total,
+                COLOR
+            );
+
+        if (total > 0) pBar.show();
+        
+        
+        for (File topicFile: topicsFiles) {
+
+            try {
+
+                topicPage = readTextFile(topicFile);
+            }
+            catch (IOException e) {
+
+                backupcc.fetch.Util.readTextFileExceptionHandler(e);
+            }
+
+            Matcher matcher = POST_FINDER.matcher(topicPage);
+
+            while (matcher.find()) {
+                
+                Matcher m = TOPIC_FILENAME_PATTERN.matcher(topicFile.getName());
+                
+                int topicId = -1;
+                int start = 0;
+                
+                if (m.find()) {
+                    
+                    topicId = Integer.valueOf(m.group(1));
+                    if (m.group(3) != null)
+                        start = (Integer.valueOf(m.group(3)) / 50);
+                    
+                }
+
+                backupcc.incremental.Incremental.putPostTopicPageOnMap(
+                    String.format(
+                        "%s:%d:%d", matcher.group(1), topicId, start
+                    )
+                );                    
+
+            }//while
+            
+            pBar.update(++countTopics);
+
+        }//for
+        
+    }//getPosts()
 
 }//classe FetchTopics
-

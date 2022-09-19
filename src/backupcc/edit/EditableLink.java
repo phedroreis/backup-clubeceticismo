@@ -274,7 +274,7 @@ public abstract class EditableLink {
         int countFiles = 0;
 
         int barLength =
-            (total <= backupcc.tui.ProgressBar.LENGTH)
+            (total < backupcc.tui.ProgressBar.LENGTH)
                 ? total : backupcc.tui.ProgressBar.LENGTH;
 
         backupcc.tui.ProgressBar bar =
@@ -298,9 +298,9 @@ public abstract class EditableLink {
             catch (IOException e) {
                                  
                 String[] msgs = {
-                    e.getMessage() + "\n",
-                    "Erro ao ler " + file.getName() + "\n",
-                    "A backup n\u00E3o pode continuar sem este arquivo\n",
+                    e.getMessage() + '\n',
+                    "Erro ao ler " + file.getName() + '\n',
+                    "O backup n\u00E3o pode continuar sem este arquivo\n",
                     "Execute um novo processo de backup"
                     
                 };

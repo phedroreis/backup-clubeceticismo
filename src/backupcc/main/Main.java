@@ -5,9 +5,9 @@ import java.io.IOException;
 /**
  * Ponto de entrada para execucao da aplicacao.
  * 
- * @since 14 de agosto de 2022
+ * @since 1.0 (14 de agosto de 2022)
  * @author "Pedro Reis"
- * @version 1.0
+ * @version 1.1
  */
 public final class Main {
     
@@ -49,23 +49,10 @@ public final class Main {
         
         backupcc.datetime.Util.setBackupStartTime();
         
-        /* Baixa paginas e arquivos do servidor */
-        try {
-            
-            backupcc.fetch.FetchPages.downloadPages();
-            backupcc.fetch.FetchFiles.fetchFiles();
+        backupcc.fetch.FetchPages.downloadPages();
+        
+        backupcc.fetch.FetchStaticFiles.fetchStaticFiles();
            
-        }
-        catch (IOException e) {
-            
-            String[] msgs = {
-                e.getMessage() + "\n",
-                "Falha ao baixar arquivos" 
-            };
-                        
-            backupcc.tui.OptionBox.abortBox(msgs);
-  
-        }//try-catch
         
         try {
             

@@ -11,10 +11,9 @@ package backupcc.command;
  */
 public final class CommandLine {
     /**
-     * Por default, a aplicação só edita os links para posts na página 
-     * principal e nas de seções.
+     * Por default, edita todos os links para posts.
      */
-    private static String postLinksRedirectLevel = "-n2";
+    private static String postLinksRedirectLevel = "-n3";
     
     /*[01]----------------------------------------------------------------------
     
@@ -141,7 +140,7 @@ public final class CommandLine {
             }
             case 3 ->  {
                 toString +=
-                    "Todos os links para posts ser\u00E3 redirecionados para" +
+                    "Todos os links para posts ser\u00E3o redirecionados para" +
                     " p\u00E1ginas de t\u00F3pico est\u00E1ticas";
             }
         }//switch
