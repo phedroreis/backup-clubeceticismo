@@ -5,7 +5,6 @@ import backupcc.incremental.Incremental;
 import backupcc.pages.Topic;
 import backupcc.tui.ProgressBar;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -160,7 +159,7 @@ final class FetchTopics {
     }//downloadTopicsPages()
     
     private static final Pattern TOPIC_FILENAME_PATTERN = 
-        Pattern.compile("t=(\\d+)(&start=(\\d+))");
+        Pattern.compile("^t=(\\d+)(&start=(\\d+))?\\.html$");
     
     /*[03]----------------------------------------------------------------------
     
@@ -173,17 +172,11 @@ final class FetchTopics {
         
         File rawPages = new File(backupcc.file.Util.RAW_PAGES);
         
-        @SuppressWarnings("Convert2Lambda")
-        File[] topicsFiles = rawPages.listFiles(
-            new FilenameFilter(){
-                @Override
-                public boolean accept(File dir, String filename){
-                    return filename.startsWith("t=");
-                }
-            }
-        );
-        
-        String topicPage = null;
+        File[] topicsFiles = rawPages.listFiles((File dir, String filename) -> {
+            Matcher filenameMatcher =
+                    TOPIC_FILENAME_PATTERN.matcher(filename);
+            return filenameMatcher.find();
+        });
         
         int total = topicsFiles.length;
         
@@ -198,35 +191,40 @@ final class FetchTopics {
 
         if (total > 0) pBar.show();
         
+        String contentFile = null;
         
         for (File topicFile: topicsFiles) {
 
             try {
 
-                topicPage = readTextFile(topicFile);
+                contentFile = readTextFile(topicFile);
             }
             catch (IOException e) {
 
                 backupcc.fetch.Util.readTextFileExceptionHandler(e);
             }
+            
+            Matcher matcher = 
+                TOPIC_FILENAME_PATTERN.matcher(topicFile.getName());
+                
+            boolean find = (matcher.find()); 
+            
+            assert(find) : "It's not a topic file";
 
-            Matcher matcher = POST_FINDER.matcher(topicPage);
+            int topicId = Integer.valueOf(matcher.group(1));
+            
+            int start = 0;
+            
+            if (matcher.group(3) != null) start = 
+                (
+                    Integer.valueOf(matcher.group(3)) /
+                    backupcc.pages.Page.MAX_ROWS_PER_PAGE
+                );
+            
+            matcher = POST_FINDER.matcher(contentFile);
 
             while (matcher.find()) {
                 
-                Matcher m = TOPIC_FILENAME_PATTERN.matcher(topicFile.getName());
-                
-                int topicId = -1;
-                int start = 0;
-                
-                if (m.find()) {
-                    
-                    topicId = Integer.valueOf(m.group(1));
-                    if (m.group(3) != null)
-                        start = (Integer.valueOf(m.group(3)) / 50);
-                    
-                }
-
                 backupcc.incremental.Incremental.putPostTopicPageOnMap(
                     String.format(
                         "%s:%d:%d", matcher.group(1), topicId, start

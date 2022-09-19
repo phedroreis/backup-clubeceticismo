@@ -281,9 +281,6 @@ public abstract class EditableLink {
             new backupcc.tui.ProgressBar(total, barLength, COLOR);
 
         bar.show();
-
-        FilesWithPostLinksToBeEditedFilter pageFilter = 
-            new FilesWithPostLinksToBeEditedFilter();
         
         for (File file : listFiles) {
             
@@ -328,10 +325,8 @@ public abstract class EditableLink {
             /*
             Edita links para posts
             */
-            if (pageFilter.accept(null, file.getName())) {
-                editFile(contentFile, new ViewtopicPhpPost());
-            }
-
+            editFile(contentFile, new ViewtopicPhpPost());
+            
             /*
             Edita links que apontam para o script viewtopic.php
              */
