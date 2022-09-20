@@ -21,19 +21,20 @@ public final class Main {
             new backupcc.command.CommandLine(args);
         
         backupcc.tui.Tui.println(commandLine.toString() + "\n");
+        
+        backupcc.file.Util.mkDirs(backupcc.file.Util.RAW_PAGES);
                   
-        /* Cria os diretorios se ainda nao existirem */
+        /* Cria o warning.html */
         try {  
-            
-            backupcc.file.Util.mkDirs(backupcc.file.Util.RAW_PAGES);
+              
             backupcc.file.Util.createWarningFile();
             
         }
         catch (IOException e) {
             
             String[] msgs = {
-                e.getMessage() + "\n",
-                "Imposs\u00EDvel criar diret\u00F3rio ou arquivo" 
+                e.getMessage() + '\n',
+                "Imposs\u00EDvel criar arquivo" 
             };
                         
             backupcc.tui.OptionBox.abortBox(msgs);
@@ -44,7 +45,7 @@ public final class Main {
         backupcc.incremental.Incremental.init();
         
         backupcc.tui.Tui.println(
-            backupcc.incremental.Incremental.lastBackupDatetime() + "\n"
+            backupcc.incremental.Incremental.lastBackupDatetime() + '\n'
         );
         
         backupcc.datetime.Util.setBackupStartTime();

@@ -85,14 +85,20 @@ public final class Util {
      * tambem todos os subdiretorios do caminho.
      * 
      * @param path O caminho com os diretorios a serem criados.
-     * 
-     * @throws IOException Se o sistema nao permitir criar o diretorio.
      */
-    public static void mkDirs(final String path) throws IOException {
+    public static void mkDirs(final String path) {
         
         File dir = new File(path);
         
-        if (!dir.exists() && !dir.mkdirs()) throw new IOException(path);
+        if (!dir.exists() && !dir.mkdirs()) {
+            
+            String[] msgs = {
+               "Falha ao criar diret\u00F3rio:\n",
+                path
+            };
+            
+            backupcc.tui.OptionBox.abortBox(msgs);
+        }
     
     }//mkDirs()
     

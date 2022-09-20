@@ -43,8 +43,8 @@ public final class CommandLine {
                     commands[0] + " <- flag n\u00E3o reconhecido!\n",
                     "Uso : [terminal]\n",
                     "terminal: -w , -u\n",
-                    "-w: modo terminal Windows",
-                    "-u: modo terminal Unix"
+                    "-w: terminal modo Windows",
+                    "-u: terminal modo Unix"
                 };
                 backupcc.tui.OptionBox.abortBox(msgs);
             }

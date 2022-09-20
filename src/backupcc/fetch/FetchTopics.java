@@ -174,7 +174,7 @@ final class FetchTopics {
         
         File[] topicsFiles = rawPages.listFiles((File dir, String filename) -> {
             Matcher filenameMatcher =
-                    TOPIC_FILENAME_PATTERN.matcher(filename);
+                TOPIC_FILENAME_PATTERN.matcher(filename);
             return filenameMatcher.find();
         });
         

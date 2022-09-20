@@ -5,8 +5,8 @@ import static backupcc.file.Util.mkDirs;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,28 +43,26 @@ public final class Incremental {
      */
     private static final String ALLPOSTS_LIST_PATHNAME = 
         RAW_PAGES + '/' + ALLPOSTS_LIST_FILENAME;
+    
+    private static final String ALLPOSTS_LIST_SHA256 = 
+        ALLPOSTS_LIST_PATHNAME + ".sha";
    
     /*
     Nome do arquivo com a lista de numero de posts por topico.
     */
-    private static final String POST_LIST_FILENAME = "last-posts.dat";
-    
-    /*
-    Arquivo com o hash de verificacao de POST_LIST_FILENAME
-    */
-    private static final String SHA256_FILENAME = POST_LIST_FILENAME + ".sha";
-    
+    private static final String LASTPOSTS_LIST_FILENAME = "last-posts.dat";
+        
     /*
     O pathname do arquivo onde eh gravado o numero de posts de cada topico.
     */
-    private static final String POST_LIST_PATHNAME =
-        RAW_PAGES + '/' + POST_LIST_FILENAME;
+    private static final String LASTPOSTS_LIST_PATHNAME =
+        RAW_PAGES + '/' + LASTPOSTS_LIST_FILENAME;
     
     /*
     Path do arquivo com o hash de verificacao do arquivo de dados.
     */
-    private static final String SHA256_PATHNAME =
-        RAW_PAGES + '/' + SHA256_FILENAME;
+    private static final String LASTPOSTS_LIST_SHA256 = 
+        LASTPOSTS_LIST_PATHNAME + ".sha";
     
     /*
     
@@ -102,32 +100,42 @@ public final class Incremental {
      */
     public static void init() {
         
-        String allPosts;
-        String tryToGetPreviousPostsList = null;
+        String PreviousAllPostsList;
+        String PreviousLastPostsList = null;
         String sha256File;
         String sha256;
         
         try {
+            PreviousLastPostsList = 
+                backupcc.file.Util.readTextFile(LASTPOSTS_LIST_PATHNAME);
             
-            allPosts =
-                backupcc.file.Util.readTextFile(ALLPOSTS_LIST_PATHNAME);
+            sha256 = backupcc.security.Util.sha256(PreviousLastPostsList);
             
-            Scanner scanner = new Scanner(allPosts);
-            
-            while (scanner.hasNext()) {
-                
-               putPostTopicPageOnMap(scanner.next());
-               
-            }
-            
-            tryToGetPreviousPostsList = 
-                backupcc.file.Util.readTextFile(POST_LIST_PATHNAME);
-            
-            sha256 = backupcc.security.Util.sha256(tryToGetPreviousPostsList);
-            
-            sha256File = backupcc.file.Util.readTextFile(SHA256_PATHNAME);
+            sha256File = backupcc.file.Util.readTextFile(LASTPOSTS_LIST_SHA256);
             
             backupIncremental = (sha256.equals(sha256File));
+            
+            if (backupIncremental) {
+                      
+                PreviousAllPostsList =
+                    backupcc.file.Util.readTextFile(ALLPOSTS_LIST_PATHNAME);
+                
+                sha256 = backupcc.security.Util.sha256(PreviousAllPostsList);
+                
+                sha256File = backupcc.file.Util.readTextFile(ALLPOSTS_LIST_SHA256);
+            
+                backupIncremental = (sha256.equals(sha256File));
+                
+                if (backupIncremental) {
+
+                    Scanner scanner = new Scanner(PreviousAllPostsList);
+
+                    while (scanner.hasNext()) 
+                        putPostTopicPageOnMap(scanner.next());
+ 
+                }//if
+                
+            }//if
             
         }        
         catch (IOException e) {
@@ -157,7 +165,7 @@ public final class Incremental {
 
             Pattern delimiters = Pattern.compile(DELIMITER);
 
-            String[] split = delimiters.split(tryToGetPreviousPostsList);
+            String[] split = delimiters.split(PreviousLastPostsList);
 
             for (String keyValue: split) {
 
@@ -169,22 +177,8 @@ public final class Incremental {
                     
                     lastBackupDatetime = keyValue;
 
-                    try {
-
-                        mkDirs(RAW_PAGES);
-                    }
-                    catch (IOException e) {
-
-                        String[] msgs = {
-
-                            "Imposs\u00EDvel criar diret\u00F3rio "  + RAW_PAGES
-
-                        };
-
-                        backupcc.tui.OptionBox.abortBox(msgs);                
-
-                    }
-                  
+                    mkDirs(RAW_PAGES);
+                          
                 }
                 else {//ultimo post de um topico
 
@@ -277,10 +271,8 @@ public final class Incremental {
      * @param postTopicPage Post ID, Topic ID e Page Index no formato 
      * postId:topicId:PageIndex
      * 
-     * @return false se não estiver formatado no padrão ou se já existia algum
-     * outro post
      */
-    public static boolean putPostTopicPageOnMap(final String postTopicPage) {
+    public static void putPostTopicPageOnMap(final String postTopicPage) {
         
         int postId;
         
@@ -294,15 +286,10 @@ public final class Incremental {
             topicPage[0] = Integer.valueOf(matcher.group(2));
             topicPage[1] = Integer.valueOf(matcher.group(3));
             
-            boolean newPostId = (POST_MAP.put(postId, topicPage) == null);
-            
-            assert(newPostId) : "Post ID already on map";
-            
-            return newPostId;
+            POST_MAP.put(postId, topicPage);
+         
         }
-        
-        return false;        
-        
+          
     }//putPostTopicPageOnMap()
     
     /*[05]----------------------------------------------------------------------
@@ -368,16 +355,31 @@ public final class Incremental {
      */
     private static void saveAllPostsList() throws IOException {
         
-        Set<Integer> keySet = POST_MAP.keySet();
+        //Set<Integer> keySet = POST_MAP.keySet();
+        
+        Iterator<Integer> iterator = POST_MAP.keySet().iterator();
 
         StringBuilder sb = new StringBuilder(1000000);
-
+        
+        while (iterator.hasNext()) {
+            
+            int postId = iterator.next();
+            
+            sb.append(getPostTopicPageOnMap(postId)).append('\n');
+            
+            iterator.remove();
+        }
+/*
         for (Integer postId: keySet) {
             sb.append(getPostTopicPageOnMap(postId));
             sb.append('\n');
-        }
-      
+        }*/
+              
         backupcc.file.Util.writeTextFile(ALLPOSTS_LIST_PATHNAME, sb.toString());
+          
+        backupcc.file.Util.writeTextFile(ALLPOSTS_LIST_SHA256, 
+            backupcc.security.Util.sha256(sb.toString())
+        );
 
     }//saveAllPostsList()
     
@@ -409,10 +411,9 @@ public final class Incremental {
         
         String lastPostsList = updatedLastPostsList.toString();
         
-        backupcc.file.Util.writeTextFile(POST_LIST_PATHNAME, lastPostsList);
+        backupcc.file.Util.writeTextFile(LASTPOSTS_LIST_PATHNAME, lastPostsList);
          
-        backupcc.file.Util.writeTextFile(
-            SHA256_PATHNAME, 
+        backupcc.file.Util.writeTextFile(LASTPOSTS_LIST_SHA256, 
             backupcc.security.Util.sha256(lastPostsList)
         );
          
