@@ -78,6 +78,7 @@ final class FetchTopics {
      * Baixa as paginas de tópicos.
      * 
      */
+    @SuppressWarnings("null")
     private void downloadTopicsPages() {
         
         boolean isIncrementalBackup =
@@ -109,10 +110,16 @@ final class FetchTopics {
             pBar.show();        
         else
             backupcc.tui.Tui.println(" ");
+        
+        StringBuilder sb = null;
+        
+        if (backupcc.command.CommandLine.listTopics)
+            sb = new StringBuilder(1000000);
          
         for (Topic topic: topics) {
             
-            countTopics++;
+            if (backupcc.command.CommandLine.listTopics) 
+                sb.append(topic.getName()).append('\n');
             
             int lastPostNumberOnPreviousBackup = 
                 Incremental.lastPostOnPreviousBackup(topic.getId());
@@ -149,9 +156,12 @@ final class FetchTopics {
             
             }//if
             
-            pBar.update(countTopics);
+            pBar.update(++countTopics);
             
         }//for topic
+        
+        if (backupcc.command.CommandLine.listTopics)
+            backupcc.file.Util.createTopicsListFile(sb.toString());
         
         if (isIncrementalBackup) 
             showUpdatedInfo(updatedTopics, totalOfNewPosts);

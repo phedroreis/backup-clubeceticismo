@@ -78,29 +78,11 @@ public final class FetchStaticFiles {
 
                 if (!f.exists()) {
                     
-                    
-                    try {
+                    backupcc.file.Util.mkDirs(localPath);
 
-                        backupcc.file.Util.mkDirs(localPath);
-
-                    }
-                    catch (IOException e) {
-
-                        String[] msgs = {
-                            e.getMessage() + "\n",
-                            "Falha ao criar diret\u00F3rio: " + localPath
-                        };
-
-                        backupcc.tui.OptionBox.abortBox(msgs);
-
-                    }//try-catch
-
-                    
-                    
                     if (flag) {
                         
-                        backupcc.tui.Tui.println(" ");
-                        backupcc.tui.Tui.println(" ");
+                        backupcc.tui.Tui.println("\n");
                         flag = false;
                         
                     }

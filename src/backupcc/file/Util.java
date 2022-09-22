@@ -11,7 +11,7 @@ import java.nio.file.Files;
  * Metodos e campos uteis para manipulacao de arquivos e diretorios.
  * 
  * @author "Pedro Reis"
- * @since 23 de agosto de 2022
+ * @since 1.0 (23 de agosto de 2022)
  * @version 1.0
  */
 public final class Util {
@@ -53,7 +53,9 @@ public final class Util {
      * Nome do arquivo com a pagina que deve informar que se trata de uma 
      * copia estatica do forum.
      */
-    public static final String WARNING_FILENAME = "warning.html";
+    public static final String WARNING_FILENAME = "_warning.html";
+    
+    public static final String TOPICS_LIST_FILENAME = "_topics_list.dat";
      
     /**
      * O diretorio que irah conter os arquivos e subdiretorios da copia 
@@ -206,14 +208,61 @@ public final class Util {
      * Cria o arquivo com a pagina informando se tratar de uma copia estatica do
      * forum.
      * 
-     * @throws IOException Em caso de erro de IO.
      */
-    public static void createWarningFile() throws IOException {
+    public static void createWarningFile() {
         
         File warningFile = new File(FORUM_HOME + '/' + WARNING_FILENAME);
-        
-        if (!warningFile.exists()) writeTextFile(warningFile, WARNING_CONTENT);
+   
+        try {
+
+            writeTextFile(warningFile, WARNING_CONTENT);
+        }
+        catch (IOException e) {
+
+
+            String[] msgs = {
+
+                e.getMessage() + '\n',
+                "Imposs\u00EDvel criar arquivo : " + WARNING_FILENAME
+            };
+
+            backupcc.tui.OptionBox.abortBox(msgs);
+
+        }//try-catch
+
         
     }//createWarningFile()
+    
+    /*[07]----------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------*/
+    /**
+     * Grava um arquivo com os nomes de todos os tópicos do fórum.
+     * 
+     * @param list Uma lista com os nomes de todos os tópicos.
+     */
+    public static void createTopicsListFile(final String list) {
+        
+                
+        File topicsListFile = new File(RAW_PAGES + '/' + TOPICS_LIST_FILENAME);
+   
+        try {
+
+            writeTextFile(topicsListFile, list);
+        }
+        catch (IOException e) {
+
+
+            String[] msgs = {
+
+                e.getMessage() + '\n',
+                "Imposs\u00EDvel criar arquivo : " + TOPICS_LIST_FILENAME
+            };
+
+            backupcc.tui.OptionBox.warningBox(msgs);
+
+        }//try-catch
+        
+    }//createTopicsListFile()
     
 }//classe Util

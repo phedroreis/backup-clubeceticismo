@@ -35,7 +35,7 @@ public final class Incremental {
      * O nome do arquivo com a lista de todos os posts com os respectivos
      * arquivos ao qual pertencem.
      */
-    private static final String ALLPOSTS_LIST_FILENAME = "all-posts.dat";
+    private static final String ALLPOSTS_LIST_FILENAME = "_all-posts.dat";
     
     /**
      * O pathname do arquivo com a lista de todos os posts com os respectivos
@@ -50,7 +50,7 @@ public final class Incremental {
     /*
     Nome do arquivo com a lista de numero de posts por topico.
     */
-    private static final String LASTPOSTS_LIST_FILENAME = "last-posts.dat";
+    private static final String LASTPOSTS_LIST_FILENAME = "_last-posts.dat";
         
     /*
     O pathname do arquivo onde eh gravado o numero de posts de cada topico.

@@ -10,6 +10,8 @@ package backupcc.command;
  */
 public final class CommandLine {
     
+    public static boolean listTopics;
+    
     /*[01]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
@@ -29,26 +31,37 @@ public final class CommandLine {
      * -u : força que as saídas para o terminal sejam no padrão de sistemas
      * Unix, reconhecendo comandos ANSI
      * </li>
+     * <li>
+     * -t : gera um arquivo com uma lista de todos os tópicos
+     * </li>
      * </ul>
      * 
      * @param commands Linha de comando digitada ao executar o programa.
      */
     public CommandLine(final String[] commands) {
         
-        switch (commands[0]) {
-            case "-w" -> backupcc.tui.Tui.ansiCodesDisable();
-            case "-u" -> backupcc.tui.Tui.ansiCodesEnable();
-            default -> {
-                String[] msgs = {
-                    commands[0] + " <- flag n\u00E3o reconhecido!\n",
-                    "Uso : [terminal]\n",
-                    "terminal: -w , -u\n",
-                    "-w: terminal modo Windows",
-                    "-u: terminal modo Unix"
-                };
-                backupcc.tui.OptionBox.abortBox(msgs);
-            }
-        }//switch
+        listTopics = false;
+        
+        for (String command: commands) {
+
+            switch (command) {
+                case "-w" -> backupcc.tui.Tui.ansiCodesDisable();
+                case "-u" -> backupcc.tui.Tui.ansiCodesEnable();
+                case "-t" -> listTopics = true;
+                default -> {
+                    String[] msgs = {
+                        commands[0] + " <- flag n\u00E3o reconhecido!\n",
+                        "Uso : [terminal] [listar t\u00F3picos]\n",
+                        "terminal: -w , -u\n",
+                        "-w: terminal modo Windows",
+                        "-u: terminal modo Unix",
+                        "-t: gera arquivo com a lista de todos os t\u00F3picos"
+                    };
+                    backupcc.tui.OptionBox.abortBox(msgs);
+                }
+            }//switch
+            
+        }//for
               
     }//CommandLine()
         
@@ -66,6 +79,9 @@ public final class CommandLine {
         String toString = "Interface de terminal = modo ";
         
         toString += backupcc.tui.Tui.isWindowsOS() ? "Windows" : "Unix";
+        
+        if (listTopics) 
+            toString += "\nSer\u00E1 gerado arquivo com lista de t\u00F3picos";
                 
         return toString;
         

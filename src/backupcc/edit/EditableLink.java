@@ -255,11 +255,9 @@ public abstract class EditableLink {
     /**
      * Edita todos os HTMLs de páginas do fórum baixados na última execução de
      * um backup incremental do fórum.
-     *
-     * @throws backupcc.exception.IOExceptionX Em caso de erro de IO ao gravar 
-     * um arquivo.
      */
-    public static void editFiles() throws backupcc.exception.IOExceptionX {
+    @SuppressWarnings("null")
+    public static void editFiles() {
 
         File dir = new File(backupcc.file.Util.RAW_PAGES);
 
@@ -282,10 +280,10 @@ public abstract class EditableLink {
 
         bar.show();
         
+        StringEditor contentFile = null;
+        
         for (File file : listFiles) {
-            
-            StringEditor contentFile;
-
+     
             try {
                 
                 contentFile =                    
@@ -302,11 +300,9 @@ public abstract class EditableLink {
                     
                 };
                 
-                throw new backupcc.exception.IOExceptionX(
-                    msgs, backupcc.exception.IOExceptionX.ABORT
-                );    
-                
-            }
+                backupcc.tui.OptionBox.abortBox(msgs);
+                              
+            }//try-catch
 
             /*
             Edita links cujo nome de domínio seja o do servidor do fórum,
@@ -366,9 +362,7 @@ public abstract class EditableLink {
                     
                 };
                 
-                throw new backupcc.exception.IOExceptionX(
-                    msgs, backupcc.exception.IOExceptionX.ABORT
-                );     
+                backupcc.tui.OptionBox.abortBox(msgs);
                 
             }//try-catch
 
