@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  * funcionalidade clicada nao stah disponivel nessa versao off line.</p>
  * 
  * @author "Pedro Reis"
- * @since 6 de setembro de 2022
+ * @since 1.0 (6 de setembro de 2022)
  * @version 1.0
  */
 final class AnyPhp extends EditableLink {

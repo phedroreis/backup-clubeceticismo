@@ -91,7 +91,7 @@ final class FetchTopics {
         int total = topics.size(); 
         
         backupcc.tui.Tui.printlnc(
-            "\n" + total + " t\u00F3picos p\u00FAblicos encontrados.\n", COLOR
+            "\n" + total + " t\u00F3picos p\u00FAblicos encontrados\n", COLOR
         );
     
         backupcc.tui.Tui.printlnc(

@@ -309,7 +309,7 @@ public abstract class EditableLink {
             fazendo-os apontar para o diretório local onde está instalada a 
             cópia estática.
              */
-            editFile(contentFile, new Root());
+            contentFile.replace(backupcc.net.Util.FORUM_URL + '/', "./");
 
             /*
             Edita todos os links que apontam para a página incial do fórum,
@@ -341,6 +341,11 @@ public abstract class EditableLink {
             dando nesta tal cópia estática.
              */
             editFile(contentFile, new AnyPhp());
+            
+            /*
+            Edita links de avatares
+            */
+            contentFile.replace("file.php?", "");
 
             File editedFile = 
                 new File(backupcc.file.Util.FORUM_HOME + '/' + file.getName());
