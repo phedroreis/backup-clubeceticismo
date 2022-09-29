@@ -23,7 +23,25 @@ import java.util.List;
  */
 public final class UpdatePageIndexes {
     
+    /**
+     * Uma lista com os tópicos que possuem páginas cujos índices numéricos de
+     * navegação irão ficar desatualizados no corrente backup incremental.
+     */
     private static final List<int[]> TOPICS_LIST = new LinkedList<>();
+    
+    /**
+     * Cor de texto para saídas no terminal tipo Unix.
+     */
+    private static final int COLOR = backupcc.tui.Tui.YELLOW;
+    
+    /**
+     * Este comentário é gravado ao final do arquivo HTML para o programa saber
+     * que já existe um botão de link atualizando a última do tópico,
+     * acrescentado a lista de índices numéricos. Porque na próxima vez que os
+     * índices numéricos desta página precisarem ser atualizados, o botão não 
+     * deve ser inserido novamente, mas apenas ter seu rótulo editado.
+     */
+    private static final String INDEXES_UPDATED = "<!--updated-->";
     
     /*[01]----------------------------------------------------------------------
     
@@ -85,7 +103,9 @@ public final class UpdatePageIndexes {
         return (
             "/t=" + 
             topicId + 
-            ((page == 1) ? "" : "&start=" + ((page - 1) * 50)) +
+            ((page == 1) ? 
+                "" :
+                "&start=" + ((page - 1) * backupcc.pages.Page.MAX_ROWS_PER_PAGE)) +
             ".html"
         );
     }//getFilename()
@@ -100,33 +120,51 @@ public final class UpdatePageIndexes {
      */
     public static void updatePageIndexes() {
         
-        backupcc.tui.Tui.println(
-            "\nListando t\u00F3picos com \u00EDndices a atualizar ...\n"
+        if (TOPICS_LIST.isEmpty()) return;
+        
+        backupcc.tui.Tui.printlnc(
+            "\nT\u00F3picos com \u00EDndices a atualizar ...\n",
+            COLOR
         );
         
         for (int[] toUpdate: TOPICS_LIST) {
                     
-            backupcc.tui.Tui.println(
+            backupcc.tui.Tui.printlnc(
                 "T\u00F3pico: " + toUpdate[0] +
-                " -> Atualizar \u00EDndices da pg.1 at\u00E9 pg." + toUpdate[1] + 
-                " - Nova \u00FAltima pg.: " + toUpdate[2]
+                " -> Atualizando \u00EDndices da p\u00E1g.1 at\u00E9 p\u00E1g." +
+                toUpdate[1] + 
+                " - Nova \u00FAltima p\u00E1g.: " + 
+                toUpdate[2],
+                COLOR
             );
             
             for (int i = 1; i <= toUpdate[1]; i++) {
                 
                 String pathname = 
-                    backupcc.file.Util.FORUM_HOME + 
-                    getFilename(toUpdate[0], i);
+                    backupcc.file.Util.FORUM_HOME + getFilename(toUpdate[0], i);
                 
-                String contentFile = "";
-                
+                String contentFile;
+                              
                 try {
                     
                     contentFile = backupcc.file.Util.readTextFile(pathname);
                 } 
-                catch (IOException e) {System.out.println(e);}
+                catch (IOException e) {
+                    
+                    String[] msgs = {
+                        e.getMessage() + '\n',
+                        "Erro ao ler: " + pathname + '\n',
+                        "Os \u00EDndices de p\u00E1ginas podem se tornar inconsistentes neste arquivo!",
+                        "Mesmo se o programa for abortado agora\n",
+                        "Um novo 'full backup' \u00E9 recomend\u00E1vel"
+                    };
+                    
+                    backupcc.tui.OptionBox.warningBox(msgs);
+                    
+                    continue;//Tenta atualizar indices da prox. pag. do topico
+                }
                 
-                if (contentFile.endsWith("<!--updated-->")) {
+                if (contentFile.endsWith(INDEXES_UPDATED)) {
                 
                     contentFile = 
                         contentFile.replaceAll(
@@ -149,12 +187,14 @@ public final class UpdatePageIndexes {
                             toUpdate[2] + 
                             "</a>"
                                     
-                        ) + "<!--updated-->";
+                        ) + INDEXES_UPDATED;
                     
                     contentFile =
                         contentFile.replaceAll(
                             "&bull;.+?<strong>1</strong> de <strong>\\d+</strong>",
-                            "&bull; P\u00E1gina: <strong>1</strong> de <strong>" + toUpdate[2] + "</strong>"
+                            "&bull; P\u00E1gina: <strong>1</strong> de <strong>" +
+                            toUpdate[2] + 
+                            "</strong>"
                         );
                     
                 }//if-else
@@ -163,7 +203,18 @@ public final class UpdatePageIndexes {
                     
                     backupcc.file.Util.writeTextFile(pathname, contentFile);
                 } 
-                catch (IOException e) {System.out.println(e);}
+                catch (IOException e) {
+                    
+                    String[] msgs = {
+                        e.getMessage() + '\n',
+                        "Erro ao gravar: " + pathname + '\n', 
+                        "Os \u00EDndices de p\u00E1ginas podem se tornar inconsistentes neste arquivo!",
+                        "Mesmo se o programa for abortado agora\n",
+                        "Um novo 'full backup' \u00E9 recomend\u00E1vel"
+                    };
+                    
+                    backupcc.tui.OptionBox.warningBox(msgs);
+                }
                  
             }//for i
             
