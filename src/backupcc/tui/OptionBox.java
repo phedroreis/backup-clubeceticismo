@@ -271,7 +271,7 @@ public final class OptionBox {
         System.arraycopy(msgs, 0, aux, 1, msgs.length);
          
         String[] options = {
-            "Qualquer tecla e <ENTER> para terminar."
+            "Qualquer tecla e <ENTER> para encerrar."
         };
 
         OptionBox o = new OptionBox(aux, options, ".", Tui.RED, Tui.WHITE);
@@ -342,7 +342,7 @@ public final class OptionBox {
             backupcc.datetime.Util.getElapsedTimeTo(
                 backupcc.datetime.Util.BACKUP_START_TIME
             ) + "\n",
-            "Pressione qualquer tecla e <ENTER> para fechar o terminal"
+            "Pressione qualquer tecla e <ENTER> para encerrar"
         };
 
           

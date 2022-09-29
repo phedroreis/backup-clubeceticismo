@@ -106,7 +106,7 @@ final class FetchTopics {
         
         int totalOfNewPosts = 0;
         
-        if (!backupcc.incremental.Incremental.isIncremental()) 
+        if (!isIncrementalBackup) 
             pBar.show();        
         else
             backupcc.tui.Tui.println(" ");
@@ -142,7 +142,7 @@ final class FetchTopics {
                 for (int i = firstPageToDownload-1; i<lastPageToDownload; i++) {
                     
                     String name = isIncrementalBackup ?
-                        topic.getName() + " [" + (i+1) +"]" : null;
+                        topic.getName() + " [" + (i+1) + "]" : null;
                                             
                     backupcc.net.Util.downloadUrlToPathname(
                         topic.getAbsoluteURL(i), 
@@ -153,6 +153,24 @@ final class FetchTopics {
                     );
                    
                 }//for i
+                
+                int lastPageOnPreviousBackup = Topic.getPageNumberOfThisPost(
+                    lastPostNumberOnPreviousBackup
+                );
+                
+                if (
+                        
+                    isIncrementalBackup && 
+                    lastPageToDownload > lastPageOnPreviousBackup    
+                ) {
+                    
+                    backupcc.edit.UpdatePageIndexes.add(
+                        topic.getId(), 
+                        lastPageOnPreviousBackup,
+                        lastPageToDownload
+                    );
+                    
+                }//if
             
             }//if
             
@@ -211,8 +229,11 @@ final class FetchTopics {
             }
             catch (IOException e) {
 
-                backupcc.fetch.Util.readTextFileExceptionHandler(e);
-            }
+                String[] msgs = {e.getMessage() + '\n'};
+               
+                backupcc.tui.OptionBox.abortBox(msgs);
+                
+            }//try-catch
             
             Matcher matcher = 
                 TOPIC_FILENAME_PATTERN.matcher(topicFile.getName());

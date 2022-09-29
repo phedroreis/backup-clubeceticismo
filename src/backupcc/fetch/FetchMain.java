@@ -85,10 +85,14 @@ final class FetchMain {
                 backupcc.file.Util.RAW_PAGES + '/' + main.getFilename()
             );
             
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
             
-            backupcc.fetch.Util.readTextFileExceptionHandler(e);
-        }
+            String[] msgs = {e.getMessage() + '\n'};
+               
+            backupcc.tui.OptionBox.abortBox(msgs);
+            
+        }//try-catch
         
         TreeSet <Header> headers; headers = new TreeSet<>();
         

@@ -360,8 +360,8 @@ public abstract class EditableLink {
             catch (IOException e) {
                 
                 String[] msgs = {
-                    e.getMessage() + "\n",
-                    "Erro ao gravar " + file.getName() + "\n",
+                    e.getMessage() + '\n',
+                    "Erro ao gravar " + file.getName() + '\n',
                     "A backup n\u00E3o pode continuar sem este arquivo\n",
                     "Execute um novo processo de backup"
                     
@@ -374,6 +374,8 @@ public abstract class EditableLink {
             bar.update(++countFiles);
 
         }//for file
+        
+        backupcc.edit.UpdatePageIndexes.updatePageIndexes();
 
     }//editFiles()
 

@@ -47,7 +47,9 @@ public final class FetchStaticFiles {
         }
         catch (IOException e) {
                
-            backupcc.fetch.Util.readTextFileExceptionHandler(e);
+            String[] msgs = {e.getMessage() + '\n'};
+               
+            backupcc.tui.OptionBox.abortBox(msgs);
             
         }//try-catch
 

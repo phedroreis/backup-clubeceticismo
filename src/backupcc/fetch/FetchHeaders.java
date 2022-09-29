@@ -96,8 +96,11 @@ final class FetchHeaders {
             }
             catch (IOException e) {
                 
-                backupcc.fetch.Util.readTextFileExceptionHandler(e);
-            }
+                String[] msgs = {e.getMessage() + '\n'};
+               
+                backupcc.tui.OptionBox.abortBox(msgs);
+                
+            }//try-catch
 
             Matcher matcher = SECTION_FINDER.matcher(headerPage);
             
