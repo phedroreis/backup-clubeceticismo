@@ -147,12 +147,16 @@ public class Util {
         long elapsed = 0;
             
         switch (start) {
-            case BACKUP_START_TIME ->  {
+            
+            case BACKUP_START_TIME :  
+                
                 elapsed = backupStartTime.until(now, ChronoUnit.SECONDS);
-            }
-            case MILESTONE ->  {
+                break;
+            
+            case MILESTONE :
+                
                 elapsed = milestoneTime.until(now, ChronoUnit.SECONDS);
-            }
+           
         }//switch
           
         long h = elapsed / 3600;

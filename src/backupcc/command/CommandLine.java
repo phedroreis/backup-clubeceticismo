@@ -45,10 +45,19 @@ public final class CommandLine {
         for (String command: commands) {
 
             switch (command) {
-                case "-w" -> backupcc.tui.Tui.ansiCodesDisable();
-                case "-u" -> backupcc.tui.Tui.ansiCodesEnable();
-                case "-t" -> listTopics = true;
-                default -> {
+                case "-w" : 
+                    backupcc.tui.Tui.ansiCodesDisable();
+                    break;
+                
+                case "-u" :
+                    backupcc.tui.Tui.ansiCodesEnable();
+                    break;
+                    
+                case "-t" :
+                    listTopics = true;
+                    break;
+                    
+                default : 
                     String[] msgs = {
                         commands[0] + " <- flag n\u00E3o reconhecido!\n",
                         "Uso : [terminal] [listar t\u00F3picos]\n",
@@ -58,7 +67,7 @@ public final class CommandLine {
                         "-t: gera arquivo com a lista de todos os t\u00F3picos"
                     };
                     backupcc.tui.OptionBox.abortBox(msgs);
-                }
+                
             }//switch
             
         }//for

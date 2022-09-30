@@ -170,6 +170,8 @@ public final class ProgressBar {
      
         }
         else { 
+           
+            Tui.resetCursorPosition();
           
             System.out.print(
                 "(" + percent +"%)  " +
@@ -179,16 +181,17 @@ public final class ProgressBar {
                 "]100%"
             );
 
-            Tui.resetCursorPosition();
-        }
+        }//if-else
         
         if (done == total) {
-            Tui.restoreTerminalDefaults();
-            Tui.println(
+            
+            System.out.println(
                 "  " + backupcc.datetime.Util.getElapsedTimeTo(
                     backupcc.datetime.Util.MILESTONE
                 )
             );
+            Tui.restoreTerminalDefaults();
+
         }
              
     }//update()

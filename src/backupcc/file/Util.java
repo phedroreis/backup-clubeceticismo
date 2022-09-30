@@ -1,11 +1,11 @@
 package backupcc.file;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Metodos e campos uteis para manipulacao de arquivos e diretorios.
@@ -15,40 +15,7 @@ import java.nio.file.Files;
  * @version 1.0
  */
 public final class Util {
-    
-    private static final String WARNING_CONTENT =
-    """
-    <!DOCTYPE html>
-    <html dir="ltr" lang="pt-br">
-    
-    <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="./favicon.png" />
-          
-    <link href="./assets/css/font-awesome.min.css?assets_version=26" rel="stylesheet">
-    <link href="./styles/basic_aqua/theme/stylesheet.css?assets_version=26" rel="stylesheet">
-    <style>
-    h1, h2 { text-align: center; margin-top: 8%;  }
-    </style>
-    </head>
-    
-    <body>
-    
-    <header>
-    <a id="logo" class="logo" href="./clubeceticismo.com.br.html" title="Principal">
-    <img src="./styles/basic_aqua/theme/images/logo.png" data-src-hd="./styles/basic_aqua/theme/images/logo_hd.png" alt="Clube Ceticismo"/>
-    </a>
-    </header>
-    
-    <h1>Funcionalidade não disponível!</h1>
-    <h2>Você está navegando por uma cópia estática do fórum.</h2>
-    </body>
-    
-    </html>
-    """;
-    
+   
     /**
      * Nome do arquivo com a pagina que deve informar que se trata de uma 
      * copia estatica do forum.
@@ -115,12 +82,9 @@ public final class Util {
      * 
      * @return A String com o conteudo do arquivo.
      * 
-     * @throws FileNotFoundException Se o arquivo nao existir.
-     * 
      * @throws IOException Em caso de erro de IO.
      */
-    public static String readTextFile(final File file) throws
-        FileNotFoundException, IOException {
+    public static String readTextFile(final File file) throws IOException {
         
         return 
             new String(
@@ -141,12 +105,9 @@ public final class Util {
      * 
      * @return A String com o conteudo do arquivo.
      * 
-     * @throws FileNotFoundException Se o arquivo nao existir.
-     * 
      * @throws IOException Em caso de erro de IO.
      */
-    public static String readTextFile(final String file) throws
-        FileNotFoundException, IOException {
+    public static String readTextFile(final String file) throws IOException {
         
         return readTextFile(new File(file));
        
@@ -211,11 +172,15 @@ public final class Util {
      */
     public static void createWarningFile() {
         
-        File warningFile = new File(FORUM_HOME + '/' + WARNING_FILENAME);
-   
+        Path warningFileSource = new File("./" + WARNING_FILENAME).toPath();
+        
         try {
+            
+            Files.copy(
+                warningFileSource,
+                new File(FORUM_HOME + '/' + WARNING_FILENAME).toPath()
+            );
 
-            writeTextFile(warningFile, WARNING_CONTENT);
         }
         catch (IOException e) {
 

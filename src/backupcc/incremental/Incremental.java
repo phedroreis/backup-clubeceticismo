@@ -147,9 +147,7 @@ public final class Incremental {
         if (!backupIncremental) {
             
             String[] msgs = {
-                """
-                Dados do backup anterior n\u00e3o existem ou est\u00e3o corrompidos
-                """,
+                "Dados do backup anterior n\u00e3o existem ou est\u00e3o corrompidos",
                 "Se continuar ser\u00E1 iniciado um \"full backup\"\n",
                 "Ou pode abortar e restaurar o backup destes arquivos"
             };
