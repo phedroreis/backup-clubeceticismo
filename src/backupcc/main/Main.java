@@ -16,27 +16,19 @@ public final class Main {
     --------------------------------------------------------------------------*/
     public static void main(String[] args) {
         
-        /* Processa os parametros de linha de comando*/
+        /* Processa os parametros de linha de comando */
         backupcc.command.CommandLine commandLine = 
             new backupcc.command.CommandLine(args);
         
         backupcc.tui.Tui.println(commandLine.toString() + '\n');
         
-        if (!backupcc.incremental.Incremental.isIncremental()) {
-            
-            backupcc.file.Util.mkDirs(backupcc.file.Util.RAW_PAGES);
-                  
-            /* Cria o warning.html */
-            backupcc.file.Util.createWarningFile();
-        }
-       
         /* Inicializa o sistema para um backup incremental */
         backupcc.incremental.Incremental.init();
         
         backupcc.tui.Tui.println(
             backupcc.incremental.Incremental.lastBackupDatetime() + '\n'
         );
-        
+       
         /*
         Marca o instante em que se inicia o processo de backup
         */

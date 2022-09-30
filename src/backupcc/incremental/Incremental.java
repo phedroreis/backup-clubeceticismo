@@ -100,12 +100,13 @@ public final class Incremental {
      */
     public static void init() {
         
-        String PreviousAllPostsList;
+        String PreviousAllPostsList = null;
         String PreviousLastPostsList = null;
         String sha256File;
         String sha256;
         
         try {
+            
             PreviousLastPostsList = 
                 backupcc.file.Util.readTextFile(LASTPOSTS_LIST_PATHNAME);
             
@@ -113,7 +114,7 @@ public final class Incremental {
             
             sha256File = backupcc.file.Util.readTextFile(LASTPOSTS_LIST_SHA256);
             
-            backupIncremental = (sha256.equals(sha256File));
+            backupIncremental = sha256.equals(sha256File);
             
             if (backupIncremental) {
                       
@@ -122,19 +123,11 @@ public final class Incremental {
                 
                 sha256 = backupcc.security.Util.sha256(PreviousAllPostsList);
                 
-                sha256File = backupcc.file.Util.readTextFile(ALLPOSTS_LIST_SHA256);
+                sha256File = 
+                    backupcc.file.Util.readTextFile(ALLPOSTS_LIST_SHA256);
             
-                backupIncremental = (sha256.equals(sha256File));
-                
-                if (backupIncremental) {
-
-                    Scanner scanner = new Scanner(PreviousAllPostsList);
-
-                    while (scanner.hasNext()) 
-                        putPostTopicPageOnMap(scanner.next());
- 
-                }//if
-                
+                backupIncremental = sha256.equals(sha256File);
+                               
             }//if
             
         }        
@@ -144,20 +137,11 @@ public final class Incremental {
            
         }//try-catch
             
-        if (!backupIncremental) {
-            
-            String[] msgs = {
-                "Dados do backup anterior n\u00e3o existem ou est\u00e3o corrompidos",
-                "Se continuar ser\u00E1 iniciado um \"full backup\"\n",
-                "Ou pode abortar e restaurar o backup destes arquivos"
-            };
+        if (backupIncremental) {
+                     
+            Scanner scanner = new Scanner(PreviousAllPostsList);
 
-            backupcc.tui.OptionBox.warningBox(msgs);
-                         
-            previousLastPostsPerTopic = null;//backup full
-            
-        }
-        else {//backup incremental
+            while (scanner.hasNext()) putPostTopicPageOnMap(scanner.next());
              
             previousLastPostsPerTopic = new HashMap<>();
 
@@ -194,6 +178,23 @@ public final class Incremental {
                 }//if-else
 
             }//for
+        }
+        else {//backup full
+                       
+            String[] msgs = {
+                "Dados do backup anterior n\u00e3o existem ou est\u00e3o corrompidos",
+                "Se continuar ser\u00E1 iniciado um \"full backup\"\n",
+                "Ou pode abortar e restaurar o backup destes arquivos"
+            };
+
+            backupcc.tui.OptionBox.warningBox(msgs);
+                         
+            previousLastPostsPerTopic = null;//backup full
+            
+            backupcc.file.Util.mkDirs(backupcc.file.Util.RAW_PAGES);
+                  
+            /* Cria o _warning.html */
+            backupcc.file.Util.createWarningFile();
            
         }//if-else
                 
@@ -437,7 +438,7 @@ public final class Incremental {
     /**
      * Retorna a data hora do último backup ou se é full.
      * 
-     * @return tData e hora do último backup.
+     * @return Data e hora do último backup.
      */
     public static String lastBackupDatetime() {
         
