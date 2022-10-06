@@ -119,7 +119,9 @@ final class FetchTopics {
         for (Topic topic: topics) {
             
             if (backupcc.command.CommandLine.listTopics) 
-                sb.append(topic.getName()).append('\n');
+                sb.append("<li><a href=\"").append(topic.getAbsoluteURL(0)).
+                    append("\" target=\"_blank\" >").append(topic.getName()).
+                    append("</a></li>").append('\n');
             
             int lastPostNumberOnPreviousBackup = 
                 Incremental.lastPostOnPreviousBackup(topic.getId());

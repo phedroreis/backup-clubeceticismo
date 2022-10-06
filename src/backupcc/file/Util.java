@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Metodos e campos uteis para manipulacao de arquivos e diretorios.
+ * Métodos e campos úteis para manipulação de arquivos e diretórios.
  * 
  * @author "Pedro Reis"
  * @since 1.0 (23 de agosto de 2022)
@@ -22,7 +22,7 @@ public final class Util {
      */
     public static final String WARNING_FILENAME = "_warning.html";
     
-    public static final String TOPICS_LIST_FILENAME = "_topics_list.dat";
+    public static final String TOPICS_LIST_FILENAME = "_topics-list.html";
      
     /**
      * O diretorio que irah conter os arquivos e subdiretorios da copia 
@@ -204,16 +204,26 @@ public final class Util {
     /**
      * Grava um arquivo com os nomes de todos os tópicos do fórum.
      * 
-     * @param list Uma lista com os nomes de todos os tópicos.
+     * @param htmlBody Uma lista com links para todos os tópicos.
      */
-    public static void createTopicsListFile(final String list) {
+    public static void createTopicsListFile(final String htmlBody) {
         
+        String htmlHead = "<!DOCTYPE html>\n<html>\n<head>\n" +
+            "<meta charset=\"utf-8\" />\n" +
+            "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+            "<style>\nli:nth-child(odd) { background:#F2F3; }\n</style>\n" +
+            "</head>\n<body>\n" +
+            "<h2>T\u00D3picos de acesso p\u00FAblico " +
+            "(por ordem de publica\u00E7\u00E3o)</h2><ul>\n";
                 
         File topicsListFile = new File(RAW_PAGES + '/' + TOPICS_LIST_FILENAME);
-   
+       
         try {
 
-            writeTextFile(topicsListFile, list);
+            writeTextFile(
+                topicsListFile, 
+                htmlHead + htmlBody + "\n</ul>\n</body>\n</html>"
+            );
         }
         catch (IOException e) {
 
