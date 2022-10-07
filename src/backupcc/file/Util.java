@@ -211,9 +211,12 @@ public final class Util {
         String htmlHead = "<!DOCTYPE html>\n<html>\n<head>\n" +
             "<meta charset=\"utf-8\" />\n" +
             "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
-            "<style>\nli:nth-child(odd) { background:#F2F3; }\n</style>\n" +
+            "<style>\n" +
+            "h2 { text-align:center; }\n" +
+            "li:nth-child(odd) { background:#F2F3; }\n" +
+            "</style>\n" +
             "</head>\n<body>\n" +
-            "<h2>T\u00D3picos de acesso p\u00FAblico " +
+            "<h2>T\u00F3picos de acesso p\u00FAblico " +
             "(por ordem de publica\u00E7\u00E3o)</h2><ul>\n";
                 
         File topicsListFile = new File(RAW_PAGES + '/' + TOPICS_LIST_FILENAME);
