@@ -208,18 +208,22 @@ public final class Util {
      */
     public static void createTopicsListFile(final String htmlBody) {
         
-        String htmlHead = "<!DOCTYPE html>\n<html>\n<head>\n" +
-            "<meta charset=\"utf-8\" />\n" +
-            "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
-            "<style>\n" +
-            "h2 { text-align:center; }\n" +
-            "li:nth-child(odd) { background:#F2F3; }\n" +
-            "</style>\n" +
-            "</head>\n<body>\n" +
-            "<h2>T\u00F3picos de acesso p\u00FAblico " +
-            "(por ordem de publica\u00E7\u00E3o)</h2><ul>\n";
+        String htmlHead = 
+"<!DOCTYPE html>\n\n<html>\n\n<head>\n<meta charset=\"utf-8\" />\n" +
+"<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+"<link rel=\"shortcut icon\" href=\"./favicon.png\" />\n\n" +
+"<title>Lista de T\u00F3picos</title>\n\n" +
+"<link href=\"./assets/css/font-awesome.min.css?assets_version=26\" rel=\"stylesheet\">\n" +
+"<link href=\"./styles/basic_aqua/theme/stylesheet.css?assets_version=26\" rel=\"stylesheet\">\n\n" +
+"<style>\n h2 { text-align:center; }\n ul { list-style: none; }\n" +
+"li { font-size: 18px; margin: 0 10px 0 10px; }\n" +
+"li:nth-child(odd) { background:#AFEEEE; }\n</style>\n\n</head>\n\n" +
+"<body>\n\n<header id=\"site-description\" class=\"site-description\">\n" +
+"<a id=\"logo\" class=\"logo\" href=\"./clubeceticismo.com.br.html\"\" title=\"Principal\">\n" +
+"<img src=\"./styles/basic_aqua/theme/images/logo.png\" alt=\"Clube Ceticismo\"/>\n" +
+"</a>\n<h2>T\u00F3picos de acesso p\u00FAblico</h2>\n</header>\n\n<ul>";
                 
-        File topicsListFile = new File(RAW_PAGES + '/' + TOPICS_LIST_FILENAME);
+        File topicsListFile = new File(FORUM_HOME + '/' + TOPICS_LIST_FILENAME);
        
         try {
 

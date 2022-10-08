@@ -45,6 +45,11 @@ public final class ProgressBar {
     */
     private boolean hidden;
     
+    private int d = 9;
+    
+    private final static String DIGITS = 
+        "012345678901234567890123456789012345678901234567890123456789";
+    
     /*[00]----------------------------------------------------------------------
     
     --------------------------------------------------------------------------*/
@@ -117,7 +122,8 @@ public final class ProgressBar {
               
             System.out.println("0%|" + repeatChar(' ', barLength - 2) + "|100%");
             System.out.println("  v" + repeatChar(' ', barLength - 2) + "v");
-            System.out.print("  " + repeatChar('#', filled));
+            System.out.print("  " + DIGITS.substring(0, filled));
+            
         }
         else {
             
@@ -165,8 +171,10 @@ public final class ProgressBar {
         percent = p;
         
        if (Tui.isWindowsOS()) {
+           
+            d = ++d % 10;              
               
-            System.out.print("#");
+            System.out.print(d);
      
         }
         else { 
